@@ -1,3 +1,5 @@
+/* Next.js support CSS Module, only apply to specific route or component */
+
 .main {
   display: flex;
   flex-direction: column;
@@ -97,7 +99,7 @@
 
 .center::before,
 .center::after {
-  content: '';
+  content: "";
   left: 50%;
   position: absolute;
   filter: blur(45px);

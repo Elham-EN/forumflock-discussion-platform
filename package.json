@@ -9,14 +9,26 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/next-js": "^2.1.4",
+    "@chakra-ui/react": "^2.7.0",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@fontsource-variable/caveat": "^5.0.3",
+    "@fontsource-variable/open-sans": "^5.0.4",
+    "@fontsource/open-sans": "^5.0.3",
+    "@fontsource/raleway": "^5.0.3",
+    "@fontsource/roboto": "^5.0.3",
     "@types/node": "20.2.5",
     "@types/react": "18.2.9",
     "@types/react-dom": "18.2.4",
     "eslint": "8.42.0",
     "eslint-config-next": "13.4.4",
+    "firebase": "^9.22.2",
+    "framer-motion": "^10.12.16",
     "next": "13.4.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "recoil": "^0.7.7",
     "typescript": "5.1.3"
   }
 }
