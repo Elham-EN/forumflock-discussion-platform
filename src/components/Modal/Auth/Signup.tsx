@@ -6,32 +6,55 @@ import {
   InputRightElement,
   Text,
 } from "@chakra-ui/react";
-import { ReactElement, useState, ChangeEvent } from "react";
+import { ReactElement, useState, ChangeEvent, FormEvent } from "react";
 import { useSetRecoilState } from "recoil";
 import { authModalState } from "@/atoms/authModalAtom";
+import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { auth } from "@/firebase/clientApp";
+import { FIREBASE_ERRORS } from "@/firebase/errors";
 
 interface RegisterForm {
   email: string;
   password: string;
+  confirmPassword: string;
 }
 
 const initialRegisterForm: RegisterForm = {
   email: "",
   password: "",
+  confirmPassword: "",
 };
 
 export default function SignUp(): ReactElement {
   const [registerForm, setRegisterForm] =
     useState<RegisterForm>(initialRegisterForm);
-  const [show, setShow] = useState<boolean>(false);
+
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState<boolean>(false);
+
+  const [error, setError] = useState("");
+
   const setAuthModalState = useSetRecoilState(authModalState);
 
-  const handlePasswordClick = () => setShow(!show);
+  const [createUserWithEmailAndPassword, user, loading, userError] =
+    useCreateUserWithEmailAndPassword(auth);
 
-  // Firebase Logic
-  const onSubmit = () => {};
+  const handlePasswordClick = () => setShowPassword(!showPassword);
+  const handleConfirmPasswordClick = () =>
+    setShowConfirmPassword(!showConfirmPassword);
 
-  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+  // Firebase Logic - sign up user
+  const onSubmit = (event: FormEvent<HTMLFormElement>): void => {
+    event.preventDefault();
+    if (error) setError("");
+    if (registerForm.password !== registerForm.confirmPassword) {
+      setError("Password do not match");
+    }
+    createUserWithEmailAndPassword(registerForm.email, registerForm.password);
+  };
+
+  const onChange = (event: ChangeEvent<HTMLInputElement>): void => {
     // update form state
     setRegisterForm((prev) => ({
       ...prev,
@@ -40,7 +63,7 @@ export default function SignUp(): ReactElement {
   };
 
   return (
-    <form>
+    <form onSubmit={onSubmit}>
       <Input
         name="email"
         placeholder="Email"
@@ -54,14 +77,14 @@ export default function SignUp(): ReactElement {
           name="password"
           pr="4.5rem"
           size={"lg"}
-          type={show ? "text" : "password"}
+          type={showPassword ? "text" : "password"}
           placeholder="Enter password"
           onChange={onChange}
           required
         />
         <InputRightElement mt={1} width="4.5rem">
           <Button h="1.75rem" size="sm" onClick={handlePasswordClick}>
-            {show ? "Hide" : "Show"}
+            {showPassword ? "Hide" : "Show"}
           </Button>
         </InputRightElement>
       </InputGroup>
@@ -70,17 +93,30 @@ export default function SignUp(): ReactElement {
           name="confirmPassword"
           pr="4.5rem"
           size={"lg"}
-          type={show ? "text" : "password"}
+          type={showConfirmPassword ? "text" : "password"}
           placeholder="Enter confirm password"
           onChange={onChange}
           required
         />
         <InputRightElement mt={1} width="4.5rem">
-          <Button h="1.75rem" size="sm" onClick={handlePasswordClick}>
-            {show ? "Hide" : "Show"}
+          <Button h="1.75rem" size="sm" onClick={handleConfirmPasswordClick}>
+            {showConfirmPassword ? "Hide" : "Show"}
           </Button>
         </InputRightElement>
       </InputGroup>
+      {(error || userError) && (
+        <Text
+          textAlign={"center"}
+          my={3}
+          color={"red.300"}
+          fontWeight={500}
+          fontSize={"12pt"}
+        >
+          {error ||
+            FIREBASE_ERRORS[userError?.message as keyof typeof FIREBASE_ERRORS]}
+        </Text>
+      )}
+
       <Button
         type="submit"
         w={"full"}
@@ -88,6 +124,7 @@ export default function SignUp(): ReactElement {
         fontSize={"12pt"}
         fontWeight={700}
         mt={5}
+        isLoading={loading}
       >
         Sign Up
       </Button>
