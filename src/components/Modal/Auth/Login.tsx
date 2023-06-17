@@ -6,9 +6,12 @@ import {
   InputRightElement,
   Text,
 } from "@chakra-ui/react";
-import { ReactElement, useState, ChangeEvent } from "react";
+import { ReactElement, useState, ChangeEvent, FormEvent } from "react";
 import { useSetRecoilState } from "recoil";
 import { authModalState } from "@/atoms/authModalAtom";
+import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { auth } from "@/firebase/clientApp";
+import { FIREBASE_ERRORS } from "@/firebase/errors";
 
 interface LoginForm {
   email: string;
@@ -22,13 +25,27 @@ const initialLoginForm: LoginForm = {
 
 export default function Login(): ReactElement {
   const [loginForm, setLoginForm] = useState<LoginForm>(initialLoginForm);
+
+  const [formError, setFormError] = useState("");
+
   const [show, setShow] = useState<boolean>(false);
+
   const setAuthModalState = useSetRecoilState(authModalState);
+
+  const [signInWithEmailAndPassword, user, loading, error] =
+    useSignInWithEmailAndPassword(auth);
 
   const handlePasswordClick = () => setShow(!show);
 
   // Firebase Logic
-  const onSubmit = () => {};
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (formError) setFormError("");
+    if (!loginForm.email.includes("@")) {
+      return setFormError("Please enter a valid email");
+    }
+    signInWithEmailAndPassword(loginForm.email, loginForm.password);
+  };
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     // update form state
@@ -39,12 +56,12 @@ export default function Login(): ReactElement {
   };
 
   return (
-    <form>
+    <form onSubmit={onSubmit}>
       <Input
         name="email"
         placeholder="Email"
         type="email"
-        mb={2}
+        mb={5}
         size={"lg"}
         onChange={onChange}
         required
@@ -71,12 +88,22 @@ export default function Login(): ReactElement {
           password?
         </Text>
       </Flex>
+      <Text
+        textAlign={"center"}
+        color={"red.300"}
+        fontWeight={500}
+        my={8}
+        fontSize={"12pt"}
+      >
+        {FIREBASE_ERRORS[error?.message as keyof typeof FIREBASE_ERRORS]}
+      </Text>
       <Button
         type="submit"
         w={"full"}
         size={"lg"}
         fontSize={"12pt"}
         fontWeight={700}
+        isLoading={loading}
       >
         Log In
       </Button>
