@@ -84,7 +84,14 @@ export default function Login(): ReactElement {
       </InputGroup>
       <Flex fontSize={"10pt"} justifyContent={"center"} my={5}>
         <Text mr={1}>Forgot your</Text>
-        <Text color={"brand.100"} fontWeight={700} cursor={"pointer"}>
+        <Text
+          color={"brand.100"}
+          fontWeight={700}
+          cursor={"pointer"}
+          onClick={() =>
+            setAuthModalState((prev) => ({ ...prev, view: "resetPassword" }))
+          }
+        >
           password?
         </Text>
       </Flex>
