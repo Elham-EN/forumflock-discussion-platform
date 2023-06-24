@@ -64,6 +64,7 @@ export default function ResetPassword({}: Props) {
               onChange={(event: ChangeEvent<HTMLInputElement>) =>
                 setEmail(event.target.value)
               }
+              width={"full"}
             />
             <Text textAlign="center" fontSize="10pt" color="red">
               {error?.message}

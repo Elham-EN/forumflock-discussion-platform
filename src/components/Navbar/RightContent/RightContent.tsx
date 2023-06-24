@@ -5,6 +5,7 @@ import AuthButtons from "./AuthButtons";
 import AuthModal from "@/components/Modal/Auth/AuthModal";
 import { User, signOut } from "firebase/auth";
 import { auth } from "@/firebase/clientApp";
+import Icons from "./Icons";
 
 type RightContentProps = {
   user: User | null | undefined;
@@ -14,14 +15,8 @@ function RightContent({ user }: RightContentProps): ReactElement {
   return (
     <>
       <AuthModal />
-      <Flex justify={"center"} align={"center"}>
-        {user ? (
-          <Button mr={3} onClick={() => signOut(auth)}>
-            Sign Out
-          </Button>
-        ) : (
-          <AuthButtons />
-        )}
+      <Flex justify={"center"} align={"center"} mx={5}>
+        {user ? <Icons /> : <AuthButtons />}
       </Flex>
     </>
   );
