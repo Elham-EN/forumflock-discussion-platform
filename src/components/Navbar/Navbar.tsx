@@ -20,6 +20,7 @@ export default function Navbar(): React.ReactElement {
           src="/images/fedditLogoNoText1.png"
           alt="Feddit Logo"
           height={"40px"}
+          minW={"45px"}
           display={{ md: "none" }}
         />
       </Flex>

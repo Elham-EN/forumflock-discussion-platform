@@ -18,7 +18,7 @@ export default function Icons(): ReactElement {
           borderRadius={5}
           _hover={{ bg: "gray.200" }}
         >
-          <Tooltip label="Popular Posts">
+          <Tooltip label="Popular Posts" fontWeight={"bold"}>
             <span>
               <Icon as={BsArrowUpRightCircle} boxSize={"7"} />
             </span>
@@ -31,7 +31,7 @@ export default function Icons(): ReactElement {
           borderRadius={5}
           _hover={{ bg: "gray.200" }}
         >
-          <Tooltip label="Message">
+          <Tooltip label="Message" fontWeight={"bold"}>
             <span>
               <Icon as={BiMessageRounded} boxSize={"7"} />
             </span>
@@ -46,7 +46,7 @@ export default function Icons(): ReactElement {
           borderRadius={5}
           _hover={{ bg: "gray.200" }}
         >
-          <Tooltip label="Notification">
+          <Tooltip label="Notification" fontWeight={"bold"}>
             <span>
               <Icon as={BsBell} boxSize={"7"} />
             </span>
@@ -59,7 +59,7 @@ export default function Icons(): ReactElement {
           borderRadius={5}
           _hover={{ bg: "gray.200" }}
         >
-          <Tooltip label="Create Post">
+          <Tooltip label="Create Post" fontWeight={"bold"}>
             <span>
               <Icon as={BsPlusLg} boxSize={"7"} />
             </span>

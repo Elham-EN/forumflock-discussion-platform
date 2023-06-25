@@ -11,18 +11,20 @@ export default function AuthButtons(): React.ReactElement {
       <Button
         variant={"outline"}
         display={{ base: "none", sm: "flex" }}
-        height={"38px"}
-        width={{ base: "78px", md: "110px" }}
+        height={"48px"}
+        width={{ base: "78px", md: "180px" }}
         mr={2}
+        fontSize={"16px"}
         onClick={() => setAuthModalState({ open: true, view: "login" })}
       >
         Log In
       </Button>
       <Button
         display={{ base: "none", sm: "flex" }}
-        height={"38px"}
-        width={{ base: "78px", md: "110px" }}
+        height={"48px"}
+        width={{ base: "78px", md: "180px" }}
         mr={2}
+        fontSize={"16px"}
         onClick={() => setAuthModalState({ open: true, view: "signup" })}
       >
         Sign Up

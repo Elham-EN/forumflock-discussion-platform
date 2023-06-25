@@ -7,7 +7,7 @@ type SearchInputProps = {};
 export default function SearchInput({}: SearchInputProps) {
   return (
     // Flex grow - take up the remaining width of it's parent container
-    <Flex flexGrow={1} mr={2} align={"center"}>
+    <Flex flexGrow={1} mr={2} ml={2} align={"center"}>
       <InputGroup>
         <InputLeftElement pointerEvents="none">
           <SearchIcon color="gray.400" />
