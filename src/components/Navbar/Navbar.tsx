@@ -2,6 +2,7 @@ import React from "react";
 import { Flex, Image } from "@chakra-ui/react";
 import SearchInput from "./SearchInput";
 import RightContent from "./RightContent/RightContent";
+import Directory from "./Directory/Directory";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase/clientApp";
 
@@ -14,6 +15,7 @@ export default function Navbar(): React.ReactElement {
           src="/images/fedditLogo1.png"
           alt="Feddit Logo"
           height={"50px"}
+          minW={"150px"}
           display={{ base: "none", md: "unset" }}
         />
         <Image
@@ -24,6 +26,7 @@ export default function Navbar(): React.ReactElement {
           display={{ md: "none" }}
         />
       </Flex>
+      <Directory />
       <SearchInput />
       <RightContent user={user} />
     </Flex>
