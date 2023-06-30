@@ -90,7 +90,7 @@ function CreateCommunityModal({ open, handleClose }: PropType): ReactElement {
         });
         // Create communitySnippet on user. First we go to users collection, then
         // the current user document and then that current user subcollection.
-        // Third arg the id of the document we're creating 'communityName'
+        // Third arg the id of the document we're creating 'communityName' s
         transaction.set(
           doc(firestore, `users/${user?.uid}/communitySnippets`, communityName),
           {
