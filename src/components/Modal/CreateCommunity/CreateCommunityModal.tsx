@@ -24,6 +24,8 @@ import {
   serverTimestamp,
   setDoc,
   FirestoreError,
+  runTransaction,
+  Transaction,
 } from "firebase/firestore";
 import { auth, firestore } from "@/firebase/clientApp";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -65,25 +67,38 @@ function CreateCommunityModal({ open, handleClose }: PropType): ReactElement {
       );
       return;
     }
-
     setLoading(true);
-
     try {
       // First check if that community name is not taken, since it must be unique
       // Get document reference from the communities collection
       const communityDocRef = doc(firestore, "communities", communityName);
-      // Get the community document
-      const communityDoc = await getDoc(communityDocRef);
-      // Check if this community document exist in the firestore
-      if (communityDoc.exists()) {
-        throw new Error(`Sorry, f/${communityName} is taken. Try another`);
-      }
-      // Now create / update community document (if does not exist then create one)
-      await setDoc(communityDocRef, {
-        creatorId: user?.uid,
-        createdAt: serverTimestamp(),
-        numberOfMembers: 1,
-        privacyType: communityType,
+      // Create and run a transaction: If one these transaction fail then all are
+      // going to fail.
+      await runTransaction(firestore, async (transaction: Transaction) => {
+        // Get the community document
+        const communityDoc = await transaction.get(communityDocRef);
+        // Check if this community document exist in the firestore
+        if (communityDoc.exists()) {
+          throw new Error(`Sorry, f/${communityName} is taken. Try another`);
+        }
+        // Now create community document (if does not exist then create one)
+        transaction.set(communityDocRef, {
+          creatorId: user?.uid,
+          createdAt: serverTimestamp(),
+          numberOfMembers: 1,
+          privacyType: communityType,
+        });
+        // Create communitySnippet on user. First we go to users collection, then
+        // the current user document and then that current user subcollection.
+        // Third arg the id of the document we're creating 'communityName'
+        transaction.set(
+          doc(firestore, `users/${user?.uid}/communitySnippets`, communityName),
+          {
+            communityId: communityName,
+            // Am i the moderator of this community? Since i am creating the community
+            isModerator: true,
+          }
+        );
       });
       handleClose();
     } catch (error) {
