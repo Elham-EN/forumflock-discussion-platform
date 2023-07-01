@@ -5,6 +5,7 @@ import React, { ReactElement } from "react";
 import { Community } from "@/atoms/communitiesAtom";
 import CommunityNotFound from "@/components/Community/NotFound";
 import safeJsonStringify from "safe-json-stringify";
+import Header from "@/components/Community/Header";
 
 interface CommunityPageProps {
   communityData: Community;
@@ -14,7 +15,11 @@ function CommunityPage({ communityData }: CommunityPageProps): ReactElement {
   if (!communityData) {
     return <CommunityNotFound />;
   }
-  return <h1>Welcome To {communityData.id} community</h1>;
+  return (
+    <>
+      <Header communityData={communityData} />
+    </>
+  );
 }
 
 // Server side rendering - getServerSideProp is called on Next Server and data
