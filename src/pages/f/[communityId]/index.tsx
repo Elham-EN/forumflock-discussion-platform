@@ -3,6 +3,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { GetServerSidePropsContext } from "next";
 import React, { ReactElement } from "react";
 import { Community } from "@/atoms/communitiesAtom";
+import CommunityNotFound from "@/components/Community/NotFound";
 import safeJsonStringify from "safe-json-stringify";
 
 interface CommunityPageProps {
@@ -10,6 +11,9 @@ interface CommunityPageProps {
 }
 
 function CommunityPage({ communityData }: CommunityPageProps): ReactElement {
+  if (!communityData) {
+    return <CommunityNotFound />;
+  }
   return <h1>Welcome To {communityData.id} community</h1>;
 }
 
@@ -28,10 +32,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     const communityDoc = await getDoc(communityDocRef);
     return {
       props: {
-        // Save the serializing
-        communityData: JSON.parse(
-          safeJsonStringify({ id: communityDoc.id, ...communityDoc.data() })
-        ),
+        // Solve the serializing
+        communityData: communityDoc.exists()
+          ? JSON.parse(
+              safeJsonStringify({ id: communityDoc.id, ...communityDoc.data() })
+            )
+          : "",
       },
     };
   } catch (error) {
