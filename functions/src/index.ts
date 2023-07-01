@@ -11,7 +11,7 @@ admin.initializeApp();
 const db = admin.firestore();
 
 // Create cloud function - create users collection and user document
-// when user signup / create account
+// listen for event when user signup / create account
 export const createUserDocument = functions.auth
   .user()
   .onCreate(async (user) => {

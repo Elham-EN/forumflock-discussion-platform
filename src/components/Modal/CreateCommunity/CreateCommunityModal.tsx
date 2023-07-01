@@ -20,9 +20,7 @@ import React, { ReactElement, useState, ChangeEvent } from "react";
 import { FaUserFriends, FaEye, FaLock } from "react-icons/fa";
 import {
   doc,
-  getDoc,
   serverTimestamp,
-  setDoc,
   FirestoreError,
   runTransaction,
   Transaction,
