@@ -6,6 +6,7 @@ import { Community } from "@/atoms/communitiesAtom";
 import CommunityNotFound from "@/components/Community/NotFound";
 import safeJsonStringify from "safe-json-stringify";
 import Header from "@/components/Community/Header";
+import PageContent from "@/components/Layout/PageContent";
 
 interface CommunityPageProps {
   communityData: Community;
@@ -18,6 +19,15 @@ function CommunityPage({ communityData }: CommunityPageProps): ReactElement {
   return (
     <>
       <Header communityData={communityData} />
+      <PageContent>
+        {/* Pass two children to the parent component PageContent using fragment */}
+        <>
+          <div>LHS</div>
+        </>
+        <>
+          <div>RHS</div>
+        </>
+      </PageContent>
     </>
   );
 }
