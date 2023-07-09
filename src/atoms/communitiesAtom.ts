@@ -10,13 +10,13 @@ export interface Community {
   imageURL?: string;
 }
 
-interface CommunitySnippet {
+export interface CommunitySnippet {
   communityId: string;
   isModerator?: boolean;
   imageURL?: string;
 }
 
-interface CommunityState {
+export interface CommunityState {
   mySnippets: CommunitySnippet[];
 }
 
@@ -24,6 +24,8 @@ const defaultCommunityState: CommunityState = {
   mySnippets: [],
 };
 
+// An atom represents a piece of state. Atoms can be
+// read from and written to from any component.
 export const communityState = atom<CommunityState>({
   key: "communitiesState",
   default: defaultCommunityState,

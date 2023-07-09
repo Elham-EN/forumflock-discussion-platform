@@ -19,15 +19,22 @@ import { AiOutlineSetting } from "react-icons/ai";
 import { HiSparkles } from "react-icons/hi";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebase/clientApp";
-import { useSetRecoilState } from "recoil";
+import { useResetRecoilState, useSetRecoilState } from "recoil";
 import { authModalState } from "@/atoms/authModalAtom";
+import { communityState } from "@/atoms/communitiesAtom";
 
 interface UserMenuProps {
   user: User | null | undefined;
 }
 
 function UserMenu({ user }: UserMenuProps): ReactElement {
+  const resetCommunityState = useResetRecoilState(communityState);
   const setAuthModalState = useSetRecoilState(authModalState);
+  const logout = async () => {
+    await signOut(auth);
+    // Clear community state
+    resetCommunityState();
+  };
   return (
     <Menu>
       {user ? (
@@ -91,7 +98,7 @@ function UserMenu({ user }: UserMenuProps): ReactElement {
                 fontWeight={"bold"}
                 fontFamily={"sans-serif"}
                 fontSize={"13pt"}
-                onClick={() => signOut(auth)}
+                onClick={logout}
               >
                 Log Out
               </MenuItem>
