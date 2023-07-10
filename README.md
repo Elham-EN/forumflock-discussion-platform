@@ -1,14 +1,12 @@
-# ForumFlock (Discussion Platform)
+# 🌐 ForumFlock (Discussion Platform)
 
 I present **ForumFlock**, a vibrant, purpose-driven web application designed to foster academic collaboration and build community among students. This platform offers a unique avenue for students to discuss subject-specific topics, interact with peers, exchange academic insights, and engage in healthy intellectual debates.
 
-## Purpose and Goal:
+## 🚀 Purpose and Goal:
 
 The primary goal of this platform is to enhance the overall learning experience by bridging the gap between students and the educational resources they need. It also aims to foster a sense of community, giving students a platform where they can actively participate in relevant discussions. It enables students to gain deeper insights into their respective courses, share resources, exchange ideas, and learn collaboratively. Moreover, the platform encourages the promotion of on-campus activities, fostering a more connected university life.
 
-[Lastly, for non-technical evaluators, like HR or a recruiter, the text illustrates the problem-solving capabilities, communication skills, and an understanding of user needs to be showcased through this project.]
-
-## Features and Functionalities:
+## ✅ Features and Functionalities:
 
 The University Discussion Platform provides users with a variety of interactive features and functionalities. Upon creating an account and successful authentication, users can:
 
@@ -19,7 +17,7 @@ The University Discussion Platform provides users with a variety of interactive 
 5. Notifications: Users receive notifications about updates or activity within their communities, keeping them engaged and informed.
 6. Real-Time Chat: Users can communicate with others through a real-time chat feature, promoting direct interaction and collaboration.
 
-**Technology Choices:**
+# :technologist: Technology Choices
 
 1. **React.js & Next.js:** I chose React.js because of its component-based architecture, which allows for a smooth development process and easy testing. It also enables the creation of interactive UIs with ease. Next.js, a React framework, was used for its server-side rendering capability, providing SEO advantages and improved performance.
 2. **TypeScript:** TypeScript was my choice for its static typing features. It helps catch errors during development, enforces good coding practices, and enhances code readability and maintainability.
@@ -27,7 +25,7 @@ The University Discussion Platform provides users with a variety of interactive 
 4. **Recoil State Management:** Recoil was decided for its efficiency in managing global state in a React application. Its atomic model of state management allows components to subscribe only to the data they need, improving performance.
 5. **Firebase Services:** Firebase's wide range of services such as Firestore for a NoSQL cloud database, Auth for authentication, Cloud Functions for backend logic, Storage for storing user-generated content, and Firebase Cloud Messaging for notifications allowed me to build a feature-rich application without managing complex backend infrastructure. Firebase also aids in rapid development and deployment, with robust security and scalability.
 
-# To run the application on localhost
+# ⬇️ To run the application on localhost
 
 ### Prerequisties
 
