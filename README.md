@@ -8,7 +8,7 @@ The primary goal of this platform is to enhance the overall learning experience 
 
 ## ✅ Features and Functionalities:
 
-The University Discussion Platform provides users with a variety of interactive features and functionalities. Upon creating an account and successful authentication, users can:
+The ForumFlock Platform provides users with a variety of interactive features and functionalities. Upon creating an account and successful authentication, users can:
 
 1. Join and Create Communities: Users can join existing communities based on their academic interests, or create new communities to engage like-minded individuals.
 2. Voting System: The platform incorporates a voting system that allows users to upvote or downvote posts, giving feedback and helping highlight the most valuable content.
