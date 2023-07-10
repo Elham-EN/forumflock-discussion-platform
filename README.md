@@ -58,4 +58,5 @@ To run the Next.js Server:
 npm run dev
 ```
 
-[http://localhost:3000/]
+Localhost
+[http://localhost:3000/](http://localhost:3000/)
