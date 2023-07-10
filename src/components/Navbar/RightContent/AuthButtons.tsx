@@ -16,6 +16,7 @@ export default function AuthButtons(): React.ReactElement {
         mr={2}
         fontSize={"16px"}
         onClick={() => setAuthModalState({ open: true, view: "login" })}
+        id="login-button"
       >
         Log In
       </Button>
@@ -26,6 +27,7 @@ export default function AuthButtons(): React.ReactElement {
         mr={2}
         fontSize={"16px"}
         onClick={() => setAuthModalState({ open: true, view: "signup" })}
+        id="signup-button"
       >
         Sign Up
       </Button>

@@ -111,6 +111,7 @@ export default function Login(): ReactElement {
         fontSize={"12pt"}
         fontWeight={700}
         isLoading={loading}
+        id="modal-login-button"
       >
         Log In
       </Button>

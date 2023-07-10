@@ -44,7 +44,11 @@ export default function AuthModal() {
 
   return (
     <>
-      <Modal isOpen={modalState.open} onClose={handleClose}>
+      <Modal
+        isOpen={modalState.open}
+        onClose={handleClose}
+        data-testid="auth-modal"
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader textAlign={"center"}>
