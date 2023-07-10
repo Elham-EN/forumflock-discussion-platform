@@ -18,3 +18,44 @@ The University Discussion Platform provides users with a variety of interactive 
 4. Search Capabilities: The platform offers robust search functionality, enabling users to locate specific communities or users easily.
 5. Notifications: Users receive notifications about updates or activity within their communities, keeping them engaged and informed.
 6. Real-Time Chat: Users can communicate with others through a real-time chat feature, promoting direct interaction and collaboration.
+
+**Technology Choices:**
+
+1. **React.js & Next.js:** I chose React.js because of its component-based architecture, which allows for a smooth development process and easy testing. It also enables the creation of interactive UIs with ease. Next.js, a React framework, was used for its server-side rendering capability, providing SEO advantages and improved performance.
+2. **TypeScript:** TypeScript was my choice for its static typing features. It helps catch errors during development, enforces good coding practices, and enhances code readability and maintainability.
+3. **Chakra UI:** Chakra UI provides a simple, modular, and accessible component library. Its wide array of components and inbuilt accessibility simplify the process of building aesthetically pleasing interfaces without compromising user experience.
+4. **Recoil State Management:** Recoil was decided for its efficiency in managing global state in a React application. Its atomic model of state management allows components to subscribe only to the data they need, improving performance.
+5. **Firebase Services:** Firebase's wide range of services such as Firestore for a NoSQL cloud database, Auth for authentication, Cloud Functions for backend logic, Storage for storing user-generated content, and Firebase Cloud Messaging for notifications allowed me to build a feature-rich application without managing complex backend infrastructure. Firebase also aids in rapid development and deployment, with robust security and scalability.
+
+# To run the application on localhost
+
+### Prerequisties
+
+- Node.js v18 installed
+- NPM v8.19.4
+
+Git clone:
+
+```
+git@github.com:Elham-EN/forumflock-discussion-platform.git
+```
+
+Install its depedencies in its root folder:
+
+```
+npm install
+```
+
+Create .env.local and store your firebase credentials here
+
+```
+.env.local
+```
+
+To run the Next.js Server:
+
+```
+npm run dev
+```
+
+[http://localhost:3000/]
