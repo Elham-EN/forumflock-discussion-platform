@@ -7,6 +7,7 @@ import CommunityNotFound from "@/components/Community/NotFound";
 import safeJsonStringify from "safe-json-stringify";
 import Header from "@/components/Community/Header";
 import PageContent from "@/components/Layout/PageContent";
+import CreatePostLink from "@/components/Community/CreatePostLink";
 
 interface CommunityPageProps {
   communityData: Community;
@@ -22,7 +23,7 @@ function CommunityPage({ communityData }: CommunityPageProps): ReactElement {
       <PageContent>
         {/* Pass two children to the parent component PageContent using fragment */}
         <>
-          <div>LHS</div>
+          <CreatePostLink />
         </>
         <>
           <div>RHS</div>
