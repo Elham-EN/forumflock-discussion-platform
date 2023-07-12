@@ -4,7 +4,7 @@ test("User should be able to log in", async ({ page }) => {
   // start from the index page (the baseURL)
   await page.goto("http://localhost:3000/");
   // Wait for navigation
-  await page.waitForTimeout(2000);
+  await page.waitForTimeout(5000);
   // find an button element with text 'Log in' and click on it
   await page.click("#login-button");
   // wait for the modal to be open
