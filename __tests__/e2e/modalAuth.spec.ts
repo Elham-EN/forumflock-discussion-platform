@@ -4,9 +4,9 @@ test("User should be able to log in", async ({ page }) => {
   // start from the index page (the baseURL)
   await page.goto("http://localhost:3000/");
   // Wait for selector login button
-  await page.waitForSelector("#login-button");
+  await page.waitForSelector("text=Log In");
   // find an button element with text 'Log in' and click on it
-  await page.click("#login-button");
+  await page.click("text=Log In");
   // wait for the modal to be open
   await page.waitForSelector(".chakra-modal__content", {
     state: "visible",
