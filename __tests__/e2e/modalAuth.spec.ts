@@ -3,8 +3,8 @@ import { test, expect } from "@playwright/test";
 test("User should be able to log in", async ({ page }) => {
   // start from the index page (the baseURL)
   await page.goto("http://localhost:3000/");
-  // Wait for navigation
-  await page.waitForTimeout(5000);
+  // Wait for selector login button
+  await page.waitForSelector("#login-button");
   // find an button element with text 'Log in' and click on it
   await page.click("#login-button");
   // wait for the modal to be open
