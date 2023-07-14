@@ -107,3 +107,7 @@ a {
     color-scheme: dark;
   }
 }
+
+.rdw-dropdown-optionwrapper {
+  position: absolute !important;
+}

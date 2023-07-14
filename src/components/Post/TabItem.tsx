@@ -22,15 +22,15 @@ function TabItem({
       cursor={"pointer"}
       _hover={{ bg: "gray.100", color: "brand.100" }}
       color={selected ? "brand.100" : "gray.600"}
-      borderWidth={selected ? "2px" : "1px"}
+      borderWidth={selected ? "2px" : "0px"}
       borderBottomColor={selected ? "brand.100" : "gray.200"}
       borderRightColor={"gray.200"}
       onClick={() => setSelectedTab(item.title)}
     >
       <Flex align={"center"} height={"28px"}>
-        <Icon as={item.icon} boxSize={"30px"} />
+        <Icon as={item.icon} boxSize={"24px"} />
       </Flex>
-      <Text fontSize={"16pt"} fontWeight={500}>
+      <Text fontSize={"14pt"} fontWeight={500}>
         {item.title}
       </Text>
     </Flex>
