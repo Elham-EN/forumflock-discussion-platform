@@ -7,6 +7,7 @@ import { MdOutlinePoll } from "react-icons/md";
 import { IconType } from "react-icons";
 import TabItem from "./TabItem";
 import TextInput from "./PostForm/TextInput";
+import ImageUpload from "./PostForm/ImageUpload";
 
 export interface FormTabsType {
   title: string;
@@ -50,7 +51,22 @@ export default function NewPostForm(): ReactElement {
 
   const handleCreatePost = async () => {};
 
-  const onSelectImage = () => {};
+  const onSelectImage = (event: ChangeEvent<HTMLInputElement>) => {
+    // Access the file user selected 1 Read data from the file and
+    //process it to a form that is going be useful
+    const reader = new FileReader();
+    // First check if there is a valid file selected
+    if (event.target.files?.[0]) {
+      reader.readAsDataURL(event.target.files[0]);
+    }
+    // Once the reader complete processing the file and take the result
+    // and store into the state. Onload is trigger reading data is complete
+    reader.onload = (readerEvent) => {
+      if (readerEvent.target?.result) {
+        setSelectedFile(readerEvent.target.result as string);
+      }
+    };
+  };
 
   const onTextChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -87,6 +103,14 @@ export default function NewPostForm(): ReactElement {
             handleCreatePost={handleCreatePost}
             onChange={onTextChange}
             loading={loading}
+          />
+        )}
+        {selectedTab === "Images & Video" && (
+          <ImageUpload
+            setSelectedFile={setSelectedFile}
+            setSelectedTab={setSelectedTab}
+            onSelectImage={onSelectImage}
+            selectedFile={selectedFile}
           />
         )}
       </Flex>
