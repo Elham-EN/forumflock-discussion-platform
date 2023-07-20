@@ -49,7 +49,14 @@ export default function NewPostForm(): ReactElement {
   const [selectedFile, setSelectedFile] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleCreatePost = async () => {};
+  const handleCreatePost = async () => {
+    // Create new post object => type Post
+    // Store the post in the firestore DB "Posts" Collection
+    // Check if file is selected
+    // Then store the selected file in firebase storage
+    // Then update the Post Doc with add image url
+    // redirect the user back to the communityPage
+  };
 
   const onSelectImage = (event: ChangeEvent<HTMLInputElement>) => {
     // Access the file user selected 1 Read data from the file and
