@@ -4,11 +4,13 @@ import { Box, Icon, Text } from "@chakra-ui/react";
 import React, { ReactElement } from "react";
 import { MdCreate } from "react-icons/md";
 import { useRouter } from "next/router";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "@/firebase/clientApp";
 
 export default function Submit(): ReactElement {
   const router = useRouter();
-  console.log(router.query.communityId);
-
+  // Get Current Logged IN / Authenticated user's information
+  const [user] = useAuthState(auth);
   return (
     <PageContent>
       <>
@@ -37,7 +39,12 @@ export default function Submit(): ReactElement {
             community
           </Text>
         </Box>
-        <NewPostForm />
+        {user && (
+          <NewPostForm
+            user={user}
+            communityId={router.query.communityId as string}
+          />
+        )}
       </>
       <>
         <div>About community</div>

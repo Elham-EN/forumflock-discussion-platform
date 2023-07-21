@@ -1,4 +1,10 @@
-import { Flex, layout } from "@chakra-ui/react";
+import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
+  Flex,
+} from "@chakra-ui/react";
 import React, { ChangeEvent, ReactElement, useState } from "react";
 import { IoCreate } from "react-icons/io5";
 import { GoFileMedia } from "react-icons/go";
@@ -8,6 +14,24 @@ import { IconType } from "react-icons";
 import TabItem from "./TabItem";
 import TextInput from "./PostForm/TextInput";
 import ImageUpload from "./PostForm/ImageUpload";
+import { User } from "firebase/auth";
+import { Post } from "@/atoms/postsAtom";
+import {
+  FirestoreError,
+  Timestamp,
+  addDoc,
+  collection,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
+import { firestore, storage } from "@/firebase/clientApp";
+import { getDownloadURL, ref, uploadString } from "firebase/storage";
+import { useRouter } from "next/router";
+
+interface NewPostFormProps {
+  user: User;
+  communityId: string;
+}
 
 export interface FormTabsType {
   title: string;
@@ -39,7 +63,8 @@ interface TextInputType {
   body: string;
 }
 
-export default function NewPostForm(): ReactElement {
+function NewPostForm({ user, communityId }: NewPostFormProps): ReactElement {
+  const router = useRouter();
   // Track which tab item is currently selected
   const [selectedTab, setSelectedTab] = useState<string>(formTabs[0].title);
   const [textInputs, setTextInputs] = useState<TextInputType>({
@@ -48,14 +73,49 @@ export default function NewPostForm(): ReactElement {
   });
   const [selectedFile, setSelectedFile] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
 
   const handleCreatePost = async () => {
     // Create new post object => type Post
-    // Store the post in the firestore DB "Posts" Collection
-    // Check if file is selected
-    // Then store the selected file in firebase storage
-    // Then update the Post Doc with add image url
+    const newPost: Post = {
+      communityId: communityId,
+      creatorId: user.uid,
+      creatorDisplayName: user.email!.split("@")[0],
+      title: textInputs.title,
+      body: textInputs.body,
+      numberOfComments: 0,
+      voteStatus: 0,
+      createdAt: serverTimestamp() as Timestamp,
+    };
+    setLoading(true);
+    try {
+      if (!textInputs.title) {
+        throw new Error("Cannot post without a title");
+      }
+      // Store the post in the firestore DB "Posts" Collection
+      const postDocRef = await addDoc(collection(firestore, "posts"), newPost);
+      // Check if file is selected
+      if (selectedFile) {
+        // Create a reference to firebase storage
+        const imageRef = ref(storage, `posts/${postDocRef.id}/image`);
+        // Then store / upload the selected file in firebase storage
+        await uploadString(imageRef, selectedFile, "data_url");
+        // Then download the image url from the firebase storage
+        const downloadURL = await getDownloadURL(imageRef);
+        // Then update the Post Doc with add image url
+        await updateDoc(postDocRef, {
+          imageURL: downloadURL,
+        });
+        setError("");
+      }
+    } catch (error) {
+      const errorMsg = error as FirestoreError;
+      console.log("HandleCreatePost Error", errorMsg.message);
+      setError(errorMsg.message);
+    }
+    setLoading(false);
     // redirect the user back to the communityPage
+    router.back();
   };
 
   const onSelectImage = (event: ChangeEvent<HTMLInputElement>) => {
@@ -121,6 +181,17 @@ export default function NewPostForm(): ReactElement {
           />
         )}
       </Flex>
+      {error && (
+        <Alert status="error">
+          <AlertIcon />
+          <AlertTitle mr={2}>Post Error</AlertTitle>
+          <AlertDescription>
+            {error ? error : "Error creating post"}
+          </AlertDescription>
+        </Alert>
+      )}
     </Flex>
   );
 }
+
+export default NewPostForm;
