@@ -8,6 +8,7 @@ import safeJsonStringify from "safe-json-stringify";
 import Header from "@/components/Community/Header";
 import PageContent from "@/components/Layout/PageContent";
 import CreatePostLink from "@/components/Community/CreatePostLink";
+import Posts from "@/components/Post/Posts";
 
 interface CommunityPageProps {
   communityData: Community;
@@ -24,6 +25,7 @@ function CommunityPage({ communityData }: CommunityPageProps): ReactElement {
         {/* Pass two children to the parent component PageContent using fragment */}
         <>
           <CreatePostLink />
+          <Posts communityData={communityData} />
         </>
         <>
           <div>RHS</div>
