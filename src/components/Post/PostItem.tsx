@@ -1,7 +1,7 @@
 import { Post } from "@/atoms/postsAtom";
-import { Flex, Icon, Image, Stack, Text } from "@chakra-ui/react";
+import { Flex, Icon, Image, Skeleton, Stack, Text } from "@chakra-ui/react";
 import moment from "moment";
-import React, { ReactElement } from "react";
+import React, { ReactElement, useState } from "react";
 import {
   BsShare,
   BsHandThumbsUp,
@@ -25,6 +25,7 @@ interface PostItemProps {
 }
 
 function PostItem(props: PostItemProps): ReactElement {
+  const [loadingImage, setLoadingImage] = useState<boolean>(true);
   return (
     <Flex
       border={"1px solid"}
@@ -78,10 +79,15 @@ function PostItem(props: PostItemProps): ReactElement {
           </Text>
           {props.post.imageURL && (
             <Flex justify={"center"}>
+              {loadingImage && (
+                <Skeleton height={"200px"} width={"100%"} borderRadius={5} />
+              )}
               <Image
                 src={props.post.imageURL}
                 alt="post image content"
                 maxHeight={"460px"}
+                display={loadingImage ? "none" : "unset"}
+                onLoad={() => setLoadingImage(false)}
               />
             </Flex>
           )}
