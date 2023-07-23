@@ -108,14 +108,14 @@ function NewPostForm({ user, communityId }: NewPostFormProps): ReactElement {
         });
         setError("");
       }
+      // redirect the user back to the communityPage
+      router.back();
     } catch (error) {
       const errorMsg = error as FirestoreError;
       console.log("HandleCreatePost Error", errorMsg.message);
       setError(errorMsg.message);
     }
     setLoading(false);
-    // redirect the user back to the communityPage
-    router.back();
   };
 
   const onSelectImage = (event: ChangeEvent<HTMLInputElement>) => {

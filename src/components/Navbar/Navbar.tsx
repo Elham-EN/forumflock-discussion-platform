@@ -9,7 +9,14 @@ import { auth } from "@/firebase/clientApp";
 export default function Navbar(): React.ReactElement {
   const [user, loading, error] = useAuthState(auth);
   return (
-    <Flex bg={"white"} height={"70px"} padding={"6px 3px"}>
+    <Flex
+      bg={"white"}
+      height={"70px"}
+      padding={"6px 3px"}
+      position={"fixed"}
+      width={"100%"}
+      zIndex={500}
+    >
       <Flex align={"center"}>
         <Image
           src="/images/fedditLogo1.png"

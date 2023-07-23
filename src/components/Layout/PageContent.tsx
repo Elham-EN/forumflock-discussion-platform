@@ -10,7 +10,7 @@ interface PageContentProps {
 function PageContent({ children }: PageContentProps): ReactElement {
   return (
     <Flex justify={"center"} padding={"16px 0px"}>
-      <Flex width={"90%"} justify={"center"} maxWidth={"1460px"}>
+      <Flex width={"98%"} justify={"center"} maxWidth={"1460px"}>
         {/* LHS */}
         <Flex
           direction={"column"}

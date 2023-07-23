@@ -21,7 +21,7 @@ function Header({ communityData }: HeaderProps): ReactElement {
     (item) => item.communityId === communityData.id
   );
   return (
-    <Flex direction={"column"} width={"100%"} height={"186px"}>
+    <Flex direction={"column"} width={"100%"} height={"256px"}>
       <Box height={"50%"} bgGradient="linear(to-r, brand.100, #ca8aff)" />
       <Flex bg={"white"} justify={"center"} flexGrow={1}>
         <Flex width={"95%"} maxWidth={"1460px"} gap={1}>
@@ -41,7 +41,11 @@ function Header({ communityData }: HeaderProps): ReactElement {
             flexDirection={{ base: "column", md: "row" }}
           >
             <Flex flexDirection={"column"} mr={"30px"}>
-              <Text fontSize={"24pt"} fontWeight={700} wordBreak={"break-all"}>
+              <Text
+                fontSize={{ base: "16pt", md: "24pt" }}
+                fontWeight={700}
+                wordBreak={"break-all"}
+              >
                 {communityData.id}
               </Text>
               <Text fontWeight={700} color={"gray.500"} fontSize={"12pt"}>
