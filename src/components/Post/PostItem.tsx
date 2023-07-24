@@ -1,5 +1,16 @@
 import { Post } from "@/atoms/postsAtom";
-import { Flex, Icon, Image, Skeleton, Stack, Text } from "@chakra-ui/react";
+import {
+  Alert,
+  AlertIcon,
+  Flex,
+  Icon,
+  Image,
+  Skeleton,
+  Spinner,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
+import { FirestoreError } from "firebase/firestore";
 import moment from "moment";
 import React, { ReactElement, useState } from "react";
 import {
@@ -20,12 +31,31 @@ interface PostItemProps {
   // the current user vote value on this post
   userVoteValue?: number;
   onVote: () => {};
-  onDeletePost: () => {};
+  onDeletePost: (post: Post) => Promise<boolean>;
   onSelectPost: () => void;
 }
 
 function PostItem(props: PostItemProps): ReactElement {
   const [loadingImage, setLoadingImage] = useState<boolean>(true);
+  const [loadingDelete, setLoadingDelete] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+
+  const handleDelete = async () => {
+    setLoadingDelete(true);
+    try {
+      const { post, onDeletePost } = props;
+      // Delete post and return true
+      const success = await onDeletePost(post);
+      // if fail to delete post, throw an exception
+      if (!success) {
+        throw new Error("Failed to delete post");
+      }
+    } catch (error) {
+      const errorMsg = error as FirestoreError;
+      setError(errorMsg.message);
+    }
+    setLoadingDelete(false);
+  };
   return (
     <Flex
       border={"1px solid"}
@@ -61,6 +91,12 @@ function PostItem(props: PostItemProps): ReactElement {
         />
       </Flex>
       <Flex direction={"column"} width={"100%"}>
+        {error && (
+          <Alert status={"error"}>
+            <AlertIcon />
+            <Text mr={2}>{error}</Text>
+          </Alert>
+        )}
         <Stack spacing={1} p={"10px"}>
           <Stack direction={"row"} spacing={3}>
             {/** Display Community'image only in the homepage not coummunity*/}
@@ -152,8 +188,13 @@ function PostItem(props: PostItemProps): ReactElement {
               borderRadius={5}
               _hover={{ bg: "gray.200" }}
               cursor={"pointer"}
+              onClick={handleDelete}
             >
-              <Icon as={RiDeleteBinLine} boxSize={{ base: "5", md: "7" }} />
+              {loadingDelete ? (
+                <Spinner size={"sm"} />
+              ) : (
+                <Icon as={RiDeleteBinLine} boxSize={{ base: "5", md: "7" }} />
+              )}
             </Flex>
           )}
         </Flex>
