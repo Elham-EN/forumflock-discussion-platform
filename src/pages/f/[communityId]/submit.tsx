@@ -16,14 +16,15 @@ export default function Submit(): ReactElement {
       <>
         <Box
           display={"flex"}
-          alignItems={"center"}
+          alignItems={"flex-end"}
           fontSize={"24px"}
           borderBottom={"1px solid"}
           borderBottomColor={"white"}
           p={"5px 0px 5px 5px"}
           gap={2}
+          height={"180px"}
         >
-          <Icon as={MdCreate} />
+          <Icon as={MdCreate} mb={2} />
           <Text fontSize={"18pt"} fontWeight={700} fontFamily={"sans-serif"}>
             Create a post for your{" "}
             <span

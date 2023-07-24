@@ -148,7 +148,7 @@ function NewPostForm({ user, communityId }: NewPostFormProps): ReactElement {
   };
 
   return (
-    <Flex direction={"column"} bg={"white"} borderRadius={4} mt={2}>
+    <Flex direction={"column"} bg={"white"} borderRadius={4} mt={5}>
       <Flex width={"100%"}>
         {/** selected prop is a boolean type that represent if this particular tab
          * item is currently selected one. True if this tab is selected
