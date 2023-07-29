@@ -27,6 +27,7 @@ import {
 import { firestore, storage } from "@/firebase/clientApp";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { useRouter } from "next/router";
+import useSelectFile from "@/hooks/useSelectFile";
 
 interface NewPostFormProps {
   user: User;
@@ -71,9 +72,9 @@ function NewPostForm({ user, communityId }: NewPostFormProps): ReactElement {
     title: "",
     body: "",
   });
-  const [selectedFile, setSelectedFile] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const { selectedFile, setSelectedFile, onSelectFile } = useSelectFile();
 
   const handleCreatePost = async () => {
     // Create new post object => type Post
@@ -118,23 +119,6 @@ function NewPostForm({ user, communityId }: NewPostFormProps): ReactElement {
     setLoading(false);
   };
 
-  const onSelectImage = (event: ChangeEvent<HTMLInputElement>) => {
-    // Access the file user selected 1 Read data from the file and
-    //process it to a form that is going be useful
-    const reader = new FileReader();
-    // First check if there is a valid file selected
-    if (event.target.files?.[0]) {
-      reader.readAsDataURL(event.target.files[0]);
-    }
-    // Once the reader complete processing the file and take the result
-    // and store into the state. Onload is trigger reading data is complete
-    reader.onload = (readerEvent) => {
-      if (readerEvent.target?.result) {
-        setSelectedFile(readerEvent.target.result as string);
-      }
-    };
-  };
-
   const onTextChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -176,7 +160,7 @@ function NewPostForm({ user, communityId }: NewPostFormProps): ReactElement {
           <ImageUpload
             setSelectedFile={setSelectedFile}
             setSelectedTab={setSelectedTab}
-            onSelectImage={onSelectImage}
+            onSelectImage={onSelectFile}
             selectedFile={selectedFile}
           />
         )}
