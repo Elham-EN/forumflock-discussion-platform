@@ -18,6 +18,8 @@ export interface CommunitySnippet {
 
 export interface CommunityState {
   mySnippets: CommunitySnippet[];
+  // Represent the current community we are in
+  currentCommunity?: Community;
 }
 
 const defaultCommunityState: CommunityState = {

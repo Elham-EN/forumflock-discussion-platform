@@ -6,11 +6,15 @@ import { MdCreate } from "react-icons/md";
 import { useRouter } from "next/router";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase/clientApp";
+import { useRecoilValue } from "recoil";
+import { communityState } from "@/atoms/communitiesAtom";
 
 export default function Submit(): ReactElement {
   const router = useRouter();
   // Get Current Logged IN / Authenticated user's information
   const [user] = useAuthState(auth);
+  const communityStateValue = useRecoilValue(communityState);
+
   return (
     <PageContent>
       <>

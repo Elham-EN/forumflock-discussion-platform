@@ -1,23 +1,37 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { firestore } from "@/firebase/clientApp";
 import { doc, getDoc } from "firebase/firestore";
 import { GetServerSidePropsContext } from "next";
-import React, { ReactElement } from "react";
-import { Community } from "@/atoms/communitiesAtom";
+import React, { ReactElement, useEffect } from "react";
+import { Community, communityState } from "@/atoms/communitiesAtom";
 import CommunityNotFound from "@/components/Community/NotFound";
 import safeJsonStringify from "safe-json-stringify";
 import Header from "@/components/Community/Header";
 import PageContent from "@/components/Layout/PageContent";
 import CreatePostLink from "@/components/Community/CreatePostLink";
 import Posts from "@/components/Post/Posts";
+import { useSetRecoilState } from "recoil";
+import About from "@/components/Community/About";
 
 interface CommunityPageProps {
   communityData: Community;
 }
 
 function CommunityPage({ communityData }: CommunityPageProps): ReactElement {
+  const setCommunityStateValue = useSetRecoilState(communityState);
+
+  useEffect(() => {
+    // Now the global state has access to current Community data
+    setCommunityStateValue((prev) => ({
+      ...prev,
+      currentCommunity: communityData,
+    }));
+  }, []);
+
   if (!communityData) {
     return <CommunityNotFound />;
   }
+
   return (
     <>
       <Header communityData={communityData} />
@@ -28,7 +42,7 @@ function CommunityPage({ communityData }: CommunityPageProps): ReactElement {
           <Posts communityData={communityData} />
         </>
         <>
-          <div>RHS</div>
+          <About communityData={communityData} />
         </>
       </PageContent>
     </>
@@ -48,6 +62,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       context.query.communityId as string
     );
     const communityDoc = await getDoc(communityDocRef);
+    console.log(communityDoc.data());
+
     return {
       props: {
         // Solve the serializing
@@ -60,6 +76,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   } catch (error) {
     console.log("server-side-error:", error);
+    return { props: {} };
   }
 }
 
