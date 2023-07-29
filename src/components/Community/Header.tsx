@@ -3,6 +3,7 @@ import { Community } from "@/atoms/communitiesAtom";
 import useCommunityData from "@/hooks/useCommunityData";
 import { Avatar, Box, Button, Flex, Icon, Image, Text } from "@chakra-ui/react";
 import { BsBellFill } from "react-icons/bs";
+import { BiFace } from "react-icons/bi";
 
 interface HeaderProps {
   communityData: Community;
@@ -25,15 +26,29 @@ function Header({ communityData }: HeaderProps): ReactElement {
       <Box height={"50%"} bgGradient="linear(to-r, brand.100, #ca8aff)" />
       <Flex bg={"white"} justify={"center"} flexGrow={1}>
         <Flex width={"95%"} maxWidth={"1460px"} gap={1}>
-          {communityData.imageURL ? (
-            <Image src={communityData.imageURL} alt="community avatar" />
+          {communityStateValue.currentCommunity?.imageURL ? (
+            <Image
+              src={communityStateValue.currentCommunity.imageURL}
+              alt="community avatar"
+              // maxHeight={"100px"}
+              boxSize={"100px"}
+              borderRadius={"full"}
+              position="relative"
+              top={-10}
+              border="4px solid"
+              borderColor={"white"}
+            />
           ) : (
-            <Avatar
-              position={"relative"}
-              top={{ base: "10px", md: "-35px" }}
-              src="https://bit.ly/tioluwani-kolawole"
-              size={"xl"}
-              border={"5px solid white"}
+            <Icon
+              as={BiFace}
+              fontSize={100}
+              position="relative"
+              top={-3}
+              color="brand.100"
+              border="4px solid"
+              borderColor={"white"}
+              bg={"gray.100"}
+              borderRadius="50%"
             />
           )}
           <Flex
