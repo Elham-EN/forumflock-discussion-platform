@@ -80,6 +80,7 @@ function PostItem(props: PostItemProps): ReactElement {
           fontSize={22}
           onClick={props.onVote}
           cursor={"pointer"}
+          _hover={{ color: "brand.100" }}
         />
         <Text>{props.post.voteStatus}</Text>
         <Icon
@@ -88,6 +89,7 @@ function PostItem(props: PostItemProps): ReactElement {
           fontSize={22}
           onClick={props.onVote}
           cursor={"pointer"}
+          _hover={{ color: "red.600" }}
         />
       </Flex>
       <Flex direction={"column"} width={"100%"}>
