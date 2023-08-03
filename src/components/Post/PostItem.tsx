@@ -76,7 +76,7 @@ function PostItem(props: PostItemProps): ReactElement {
       >
         <Icon
           as={BsHandThumbsUp}
-          color={props.post.voteStatus === 1 ? "brand.100" : "gray.400"}
+          color={props.userVoteValue === 1 ? "brand.100" : "gray.400"}
           fontSize={22}
           onClick={() => props.onVote(props.post, 1, props.post.communityId)}
           cursor={"pointer"}
@@ -85,7 +85,7 @@ function PostItem(props: PostItemProps): ReactElement {
         <Text>{props.post.voteStatus}</Text>
         <Icon
           as={BsHandThumbsDown}
-          color={props.post.voteStatus === -1 ? "red.600" : "gray.400"}
+          color={props.userVoteValue === -1 ? "red.600" : "gray.400"}
           fontSize={22}
           onClick={() => props.onVote(props.post, -1, props.post.communityId)}
           cursor={"pointer"}
