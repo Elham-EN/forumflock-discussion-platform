@@ -33,7 +33,7 @@ function UserMenu({ user }: UserMenuProps): ReactElement {
   const logout = async () => {
     await signOut(auth);
     // Clear community state
-    resetCommunityState();
+    // resetCommunityState();
   };
   return (
     <Menu>

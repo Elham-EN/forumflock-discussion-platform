@@ -13,10 +13,11 @@ export interface Post {
   imageURL?: string;
   communityImageURL?: string;
   createdAt: Timestamp;
+  postId: string;
 }
 
 export interface PostVote {
-  id: string;
+  id?: string;
   postId: string; // the id of post this vote belongs to
   communityId: string; // the community this post is in
   voteValue: number; // 1 for upvote and -1 for downvote

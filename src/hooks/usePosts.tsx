@@ -1,3 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { authModalState } from "@/atoms/authModalAtom";
+import { communityState } from "@/atoms/communitiesAtom";
 import { Post, PostVote, postState } from "@/atoms/postsAtom";
 import { auth, firestore, storage } from "@/firebase/clientApp";
 import {
@@ -5,34 +8,39 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDocs,
+  query,
+  where,
   writeBatch,
 } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
+import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 export default function UsePosts() {
   const [postStateValue, setPostStateValue] = useRecoilState(postState);
   const [user] = useAuthState(auth);
+  const setAuthModalState = useSetRecoilState(authModalState);
+  const currentCommunity = useRecoilValue(communityState).currentCommunity;
 
-  // args - the post you vote in in that community
+  // args - the post you vote in that community
   const onVote = async (post: Post, vote: number, communityId: string) => {
     // Protect the voting feature agnainst users who are not authenticated
     // Open Authentication modal if user is not logged in
-
+    if (!user?.uid) {
+      setAuthModalState({ open: true, view: "login" });
+    }
+    const { voteStatus } = post;
+    // To tell if user has voted on this post before or not, by search
+    // through the user's postVotes array and check if there is a vote
+    // with a post id that matches this post
+    const existingVote = postStateValue.postVotes.find(
+      (vote) => vote.postId === post.id
+    );
     try {
-      const { voteStatus } = post;
-
-      // To tell if user has voted on this post before or not, by search
-      // through the user's postVotes array and check if there is a vote
-      // with a post id that matches this post
-      const existingVote = postStateValue.postVotes.find(
-        (vote) => vote.postId === post.id
-      );
-
       // Create write batch
       const batch = writeBatch(firestore);
-
       // i have created copies of the current value of state and modify these copies
       // throghout these if else statement and at the very end i can take those
       // modified values and used to update the state. The reason of creating copies
@@ -41,11 +49,9 @@ export default function UsePosts() {
       const updatedPost = { ...post };
       const updatedPosts = [...postStateValue.posts];
       let updatedPostVotes = [...postStateValue.postVotes];
-
       // represents the amount that are either going to add or subtract to the post
       // document's voteStatus. Will be modify throghout this if else logics
-      let voteChange = vote;
-
+      let voteChange = vote; // use for updating Post Document
       // If this is a new vote, then
       if (!existingVote) {
         // Create a new postVote document on users's postVote subcollection
@@ -66,17 +72,62 @@ export default function UsePosts() {
       }
       // Existing vote (user have voted already) - user modify the current vote
       else {
-        // Removing their vote (up => neutral OR down => neutral)
-        if (existingVote) {
+        // reference to already exiting postVote Document in postVotes
+        const postVoteRef = doc(
+          firestore,
+          "users",
+          `${user?.uid}/postVotes/${existingVote.id}`
+        );
+        // Removing their vote (up => neutral OR down => neutral). Let say you try
+        // vote again on post with existing vote and trying to send a vote value 1
+        // again to this function and check if the existingVote'value equal to vote
+        if (existingVote.voteValue === vote) {
           // add/subtract 1 to/from post.voteStatus
+          updatedPost.voteStatus = voteStatus - vote;
+          // Remove the existing vote from our postVotes array
+          updatedPostVotes = updatedPostVotes.filter(
+            (vote) => vote.id !== existingVote.id
+          );
           // delete the postVote document
+          batch.delete(postVoteRef);
+          voteChange *= -1;
         }
         // Flipping their vote (up => down OR down => up)
         else {
           // add/subtract 2 to/from post.voteStatus
+          updatedPost.voteStatus = voteStatus + 2 * vote;
+          // find the index of existing vote in the array
+          const voteIndex = postStateValue.postVotes.findIndex(
+            (vote) => vote.id === existingVote.id
+          );
+          // update the updatedPostVotes
+          updatedPostVotes[voteIndex] = {
+            ...existingVote,
+            voteValue: vote,
+          };
           // updating the existing postVote document
+          batch.update(postVoteRef, {
+            voteValue: vote,
+          });
+          voteChange = 2 * vote;
         }
       }
+      // Update our post document
+      const postRef = doc(firestore, "posts", post.id!);
+      batch.update(postRef, { voteStatus: voteStatus + voteChange });
+      await batch.commit();
+      // find the post index in the posts array that we are voting on,
+      const postIndex = postStateValue.posts.findIndex(
+        (item) => item.id === post.id
+      );
+      // contain the post with lastest voteStatus
+      updatedPosts[postIndex] = updatedPost;
+      // Update Recoil UI State with updated values
+      setPostStateValue((prev) => ({
+        ...prev,
+        posts: updatedPosts,
+        postVotes: updatedPostVotes,
+      }));
     } catch (error) {
       const errorFirestore = error as FirestoreError;
       console.log(errorFirestore.message);
@@ -107,6 +158,42 @@ export default function UsePosts() {
       return false;
     }
   };
+
+  // Fetch all of the users's postVotes for the currently community they are in
+  const getCommunityPostVotes = async (communityId: string): Promise<void> => {
+    const postVoteQuery = query(
+      collection(firestore, "users", `${user?.uid}/postVotes`),
+      where("communityId", "==", communityId)
+    );
+    const postVoteDocs = await getDocs(postVoteQuery);
+    const postVotes = postVoteDocs.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    setPostStateValue((prev) => ({
+      ...prev,
+      postVotes: postVotes as PostVote[],
+    }));
+  };
+
+  // call getCommunityPostVotes function, as soon as user lands in any given
+  // community page (get lastest post votes data from firestore)
+  useEffect(() => {
+    // if user is not currently on community page or not authenticated
+    if (!user || !currentCommunity?.id) return;
+    getCommunityPostVotes(currentCommunity?.id);
+  }, [user, currentCommunity]);
+
+  useEffect(() => {
+    if (!user) {
+      // clear user post votes
+      setPostStateValue((prev) => ({
+        ...prev,
+        postVotes: [],
+      }));
+    }
+  }, [user]);
+
   return {
     postStateValue,
     setPostStateValue,

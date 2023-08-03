@@ -35,7 +35,7 @@ function Posts({ communityData }: PostsProps): ReactElement {
   const getPosts = async () => {
     try {
       setLoading(true);
-      // get posts for this community
+      // get all posts for this community
       const postQuery = query(
         collection(firestore, "posts"),
         where("communityId", "==", communityData.id),
@@ -71,7 +71,10 @@ function Posts({ communityData }: PostsProps): ReactElement {
               key={post.id}
               post={post}
               userIsCreator={user?.uid === post.creatorId}
-              userVoteValue={0}
+              userVoteValue={
+                postStateValue.postVotes.find((vote) => vote.postId === post.id)
+                  ?.voteValue
+              }
               onVote={onVote}
               onSelectPost={onSelectPost}
               onDeletePost={onDeletePost}

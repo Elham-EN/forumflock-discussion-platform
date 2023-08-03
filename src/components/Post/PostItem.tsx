@@ -30,7 +30,7 @@ interface PostItemProps {
   userIsCreator: boolean;
   // the current user vote value on this post
   userVoteValue?: number;
-  onVote: () => {};
+  onVote: (post: Post, vote: number, communityId: string) => void;
   onDeletePost: (post: Post) => Promise<boolean>;
   onSelectPost: () => void;
 }
@@ -76,18 +76,18 @@ function PostItem(props: PostItemProps): ReactElement {
       >
         <Icon
           as={BsHandThumbsUp}
-          color={props.userVoteValue === 1 ? "brand.100" : "gray.400"}
+          color={props.post.voteStatus === 1 ? "brand.100" : "gray.400"}
           fontSize={22}
-          onClick={props.onVote}
+          onClick={() => props.onVote(props.post, 1, props.post.communityId)}
           cursor={"pointer"}
           _hover={{ color: "brand.100" }}
         />
         <Text>{props.post.voteStatus}</Text>
         <Icon
           as={BsHandThumbsDown}
-          color={props.userVoteValue === -1 ? "red.600" : "gray.400"}
+          color={props.post.voteStatus === -1 ? "red.600" : "gray.400"}
           fontSize={22}
-          onClick={props.onVote}
+          onClick={() => props.onVote(props.post, -1, props.post.communityId)}
           cursor={"pointer"}
           _hover={{ color: "red.600" }}
         />

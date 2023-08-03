@@ -26,8 +26,9 @@ function CommunityPage({ communityData }: CommunityPageProps): ReactElement {
       ...prev,
       currentCommunity: communityData,
     }));
-  }, []);
+  }, [communityData]);
 
+  // Community was not found in the database
   if (!communityData) {
     return <CommunityNotFound />;
   }

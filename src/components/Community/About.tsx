@@ -128,11 +128,13 @@ function About({ communityData }: AboutProps): ReactElement {
             )}
           </Flex>
           <Divider />
-          <Link href={`/f/${router.query.communityId}/submit`}>
-            <Button mb={2} mt={2} width={"100%"}>
-              Create Post
-            </Button>
-          </Link>
+          {user?.uid && (
+            <Link href={`/f/${router.query.communityId}/submit`}>
+              <Button mb={2} mt={2} width={"100%"}>
+                Create Post
+              </Button>
+            </Link>
+          )}
           {user?.uid === communityData.creatorId && (
             <Stack>
               <Divider />

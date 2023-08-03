@@ -154,7 +154,13 @@ export default function useCommunityData(): UseCommunityDataHook {
   };
 
   useEffect(() => {
-    if (!user) return; // if user is not autheticated,
+    // if user is not autheticated,
+    if (!user) {
+      setCommunityStateValue((prev) => ({
+        ...prev,
+        mySnippets: [],
+      }));
+    }
     getMySnippets(); // call this when user is autheticated
   }, [user]);
 
