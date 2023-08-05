@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { FirestoreError } from "firebase/firestore";
 import moment from "moment";
+import { useRouter } from "next/router";
 import React, { ReactElement, useState } from "react";
 import {
   BsShare,
@@ -30,17 +31,28 @@ interface PostItemProps {
   userIsCreator: boolean;
   // the current user vote value on this post
   userVoteValue?: number;
-  onVote: (post: Post, vote: number, communityId: string) => void;
+  onVote: (
+    event: React.MouseEvent<SVGElement, MouseEvent>,
+    post: Post,
+    vote: number,
+    communityId: string
+  ) => void;
   onDeletePost: (post: Post) => Promise<boolean>;
-  onSelectPost: () => void;
+  onSelectPost?: (post: Post) => void;
 }
 
 function PostItem(props: PostItemProps): ReactElement {
   const [loadingImage, setLoadingImage] = useState<boolean>(true);
   const [loadingDelete, setLoadingDelete] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  // if there is no !onSelectPost, then it's true we're on single post page
+  const singlePostPage = !props.onSelectPost;
+  const router = useRouter();
 
-  const handleDelete = async () => {
+  const handleDelete = async (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    event.stopPropagation();
     setLoadingDelete(true);
     try {
       const { post, onDeletePost } = props;
@@ -49,6 +61,9 @@ function PostItem(props: PostItemProps): ReactElement {
       // if fail to delete post, throw an exception
       if (!success) {
         throw new Error("Failed to delete post");
+      }
+      if (singlePostPage) {
+        router.push(`f/${post.communityId}`);
       }
     } catch (error) {
       const errorMsg = error as FirestoreError;
@@ -60,17 +75,19 @@ function PostItem(props: PostItemProps): ReactElement {
     <Flex
       border={"1px solid"}
       bg={"white"}
-      borderColor={"gray.300"}
+      borderColor={singlePostPage ? "white" : "gray.300"}
       borderRadius={5}
-      _hover={{ borderColor: "gray.500" }}
-      cursor={"pointer"}
-      onClick={props.onSelectPost}
+      _hover={{ borderColor: singlePostPage ? "none" : "gray.500" }}
+      cursor={singlePostPage ? "unset" : "pointer"}
+      onClick={() => props.onSelectPost && props.onSelectPost(props.post)}
     >
       <Flex
         direction={"column"}
         align={"center"}
-        bg={"gray.100"}
+        justify={singlePostPage ? "none" : "center"}
+        bg={singlePostPage ? "none" : "gray.100"}
         p={2}
+        mt={singlePostPage ? 2.5 : "0"}
         width={"40px"}
         borderRadius={5}
       >
@@ -78,7 +95,9 @@ function PostItem(props: PostItemProps): ReactElement {
           as={BsHandThumbsUp}
           color={props.userVoteValue === 1 ? "brand.100" : "gray.400"}
           fontSize={22}
-          onClick={() => props.onVote(props.post, 1, props.post.communityId)}
+          onClick={(event) =>
+            props.onVote(event, props.post, 1, props.post.communityId)
+          }
           cursor={"pointer"}
           _hover={{ color: "brand.100" }}
         />
@@ -87,7 +106,9 @@ function PostItem(props: PostItemProps): ReactElement {
           as={BsHandThumbsDown}
           color={props.userVoteValue === -1 ? "red.600" : "gray.400"}
           fontSize={22}
-          onClick={() => props.onVote(props.post, -1, props.post.communityId)}
+          onClick={(event) =>
+            props.onVote(event, props.post, -1, props.post.communityId)
+          }
           cursor={"pointer"}
           _hover={{ color: "red.600" }}
         />
@@ -190,7 +211,7 @@ function PostItem(props: PostItemProps): ReactElement {
               borderRadius={5}
               _hover={{ bg: "gray.200" }}
               cursor={"pointer"}
-              onClick={handleDelete}
+              onClick={(event) => handleDelete(event)}
             >
               {loadingDelete ? (
                 <Spinner size={"sm"} />

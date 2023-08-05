@@ -8,12 +8,15 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase/clientApp";
 import { useRecoilValue } from "recoil";
 import { communityState } from "@/atoms/communitiesAtom";
+import useCommunityData from "@/hooks/useCommunityData";
+import About from "@/components/Community/About";
 
 export default function Submit(): ReactElement {
   const router = useRouter();
   // Get Current Logged IN / Authenticated user's information
   const [user] = useAuthState(auth);
-  const communityStateValue = useRecoilValue(communityState);
+  // const communityStateValue = useRecoilValue(communityState);
+  const { communityStateValue } = useCommunityData();
 
   return (
     <PageContent>
@@ -51,9 +54,11 @@ export default function Submit(): ReactElement {
           />
         )}
       </>
-      <>
-        <div>About community</div>
-      </>
+      <div style={{ marginTop: "12.5em" }}>
+        {communityStateValue.currentCommunity && (
+          <About communityData={communityStateValue.currentCommunity} />
+        )}
+      </div>
     </PageContent>
   );
 }

@@ -14,6 +14,7 @@ import {
   writeBatch,
 } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
+import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
@@ -21,11 +22,18 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 export default function UsePosts() {
   const [postStateValue, setPostStateValue] = useRecoilState(postState);
   const [user] = useAuthState(auth);
+  const router = useRouter();
   const setAuthModalState = useSetRecoilState(authModalState);
   const currentCommunity = useRecoilValue(communityState).currentCommunity;
 
   // args - the post you vote in that community
-  const onVote = async (post: Post, vote: number, communityId: string) => {
+  const onVote = async (
+    event: React.MouseEvent<SVGElement, MouseEvent>,
+    post: Post,
+    vote: number,
+    communityId: string
+  ) => {
+    event.stopPropagation(); // event is not trigger
     // Protect the voting feature agnainst users who are not authenticated
     // Open Authentication modal if user is not logged in
     if (!user?.uid) {
@@ -112,29 +120,49 @@ export default function UsePosts() {
           voteChange = 2 * vote;
         }
       }
-      // Update our post document
+
+      // Update our post document (Database)
       const postRef = doc(firestore, "posts", post.id!);
       batch.update(postRef, { voteStatus: voteStatus + voteChange });
       await batch.commit();
+
       // find the post index in the posts array that we are voting on,
       const postIndex = postStateValue.posts.findIndex(
         (item) => item.id === post.id
       );
+
       // contain the post with lastest voteStatus
       updatedPosts[postIndex] = updatedPost;
+
       // Update Recoil UI State with updated values
       setPostStateValue((prev) => ({
         ...prev,
         posts: updatedPosts,
         postVotes: updatedPostVotes,
       }));
+
+      // Check of existent of a selected post, we're voting on selected post
+      // from the single post page
+      if (postStateValue.selectedPost) {
+        setPostStateValue((prev) => ({
+          ...prev,
+          selectedPost: updatedPost,
+        }));
+      }
     } catch (error) {
       const errorFirestore = error as FirestoreError;
       console.log(errorFirestore.message);
     }
   };
 
-  const onSelectPost = () => {};
+  // Select a single post
+  const onSelectPost = (post: Post): void => {
+    setPostStateValue((prev) => ({
+      ...prev,
+      selectedPost: post,
+    }));
+    router.push(`/f/${post.communityId}/comments/${post.id}`);
+  };
 
   const onDeletePost = async (post: Post): Promise<boolean> => {
     try {

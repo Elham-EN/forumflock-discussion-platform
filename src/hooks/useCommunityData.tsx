@@ -14,7 +14,9 @@ import {
   writeBatch,
   doc,
   increment,
+  getDoc,
 } from "firebase/firestore";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useRecoilState, useSetRecoilState } from "recoil";
@@ -37,6 +39,7 @@ export default function useCommunityData(): UseCommunityDataHook {
   const [error, setError] = useState<string>("");
   // Retrieve authentic user/ logged in user data
   const [user] = useAuthState(auth);
+  const router = useRouter();
 
   // Decide which of these two to call?
   const onJoinOrLeaveCommunity = (
@@ -163,6 +166,33 @@ export default function useCommunityData(): UseCommunityDataHook {
     }
     getMySnippets(); // call this when user is autheticated
   }, [user]);
+
+  // Call this function when we go to submit page or single post page
+  // This function do not need to be call if it comes from community
+  // page because community will already be in state
+  const getCommunityData = async (communityId: string) => {
+    try {
+      const communityDocRef = doc(firestore, "communities", communityId);
+      const communityDoc = await getDoc(communityDocRef);
+      setCommunityStateValue((prev) => ({
+        ...prev,
+        currentCommunity: {
+          id: communityDoc.id,
+          ...communityDoc.data(),
+        } as Community,
+      }));
+    } catch (error) {
+      const firestoreError = error as FirestoreError;
+      console.log(firestoreError.message);
+    }
+  };
+
+  useEffect(() => {
+    const { communityId } = router.query;
+    if (communityId && !communityStateValue.currentCommunity) {
+      getCommunityData(communityId as string);
+    }
+  }, [router.query, communityStateValue.currentCommunity]);
 
   return {
     communityStateValue,
