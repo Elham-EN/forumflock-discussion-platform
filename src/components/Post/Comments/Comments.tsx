@@ -3,12 +3,34 @@ import { Box, Flex, Text } from "@chakra-ui/react";
 import { User } from "firebase/auth";
 import React, { ReactElement, useEffect, useState } from "react";
 import CommentInput from "./CommentInput";
+import {
+  FirestoreError,
+  Timestamp,
+  collection,
+  doc,
+  increment,
+  serverTimestamp,
+  writeBatch,
+} from "firebase/firestore";
+import { firestore } from "@/firebase/clientApp";
 
 interface CommentsProps {
   user: User;
   selectedPost: Post | null;
   communityId: string;
 }
+
+interface Comment {
+  id: string;
+  creatorId: string;
+  creatorDisplayText: string;
+  communityId: string;
+  postId: string;
+  postTitle: string;
+  text: string;
+  createdAt: Timestamp;
+}
+
 function Comments({
   user,
   selectedPost,
@@ -16,11 +38,44 @@ function Comments({
 }: CommentsProps): ReactElement {
   const [commentText, setCommentText] = useState<string>("");
   // represent all of the comments for this post coming from DB
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState<Comment[]>([]);
   const [fetchLoading, setFetchLoading] = useState<boolean>(false);
   const [createLoading, setCreateLoading] = useState<boolean>(false);
 
-  const onCreateComment = async (commentText: string) => {};
+  const onCreateComment = async () => {
+    setCreateLoading(true);
+    try {
+      // Create Batch Instance
+      const batch = writeBatch(firestore);
+      // Create a comment document
+      const commentDocRef = doc(collection(firestore, "comments"));
+      const newComment: Comment = {
+        id: commentDocRef.id,
+        creatorId: user.uid,
+        creatorDisplayText: user.email!.split("@")[0],
+        communityId,
+        postId: selectedPost?.id!,
+        postTitle: selectedPost?.title!,
+        text: commentText,
+        createdAt: serverTimestamp() as Timestamp,
+      };
+      batch.set(commentDocRef, newComment);
+      // Update post numberOfComments +1
+      const postDocRef = doc(firestore, "posts", selectedPost?.id!);
+      batch.update(postDocRef, {
+        numberOfComments: increment(1),
+      });
+      await batch.commit();
+      // Update UI client recoil global state
+      setCommentText("");
+      setComments((prev) => [newComment, ...prev]);
+    } catch (error) {
+      const firestoreError = error as FirestoreError;
+      console.log(firestoreError.message);
+    }
+    setCreateLoading(false);
+  };
+
   const onDeleteComment = async (comment: any) => {};
   const getPostComments = async () => {};
 

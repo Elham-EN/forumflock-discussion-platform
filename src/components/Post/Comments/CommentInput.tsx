@@ -8,7 +8,7 @@ interface CommentInputProps {
   setCommentText: (value: string) => void; // state update function
   user: User;
   createLoading: boolean; // state variable
-  onCreateComment: (commentText: string) => void;
+  onCreateComment: () => void;
 }
 
 function CommentInput({
@@ -53,9 +53,10 @@ function CommentInput({
             <Button
               height={"36px"}
               minWidth={"200px"}
+              fontSize={"14pt"}
               disabled={commentText.length === 0}
               isLoading={createLoading}
-              onClick={() => onCreateComment(commentText)}
+              onClick={onCreateComment}
             >
               Comment
             </Button>
