@@ -2,12 +2,14 @@
 import { Post } from "@/atoms/postsAtom";
 import About from "@/components/Community/About";
 import PageContent from "@/components/Layout/PageContent";
+import Comments from "@/components/Post/Comments/Comments";
 import PostItem from "@/components/Post/PostItem";
 import PostLoader from "@/components/Post/PostLoader";
 import { auth, firestore } from "@/firebase/clientApp";
 import useCommunityData from "@/hooks/useCommunityData";
 import UsePosts from "@/hooks/usePosts";
 import { Text } from "@chakra-ui/react";
+import { User } from "firebase/auth";
 import { FirestoreError, doc, getDoc } from "firebase/firestore";
 import { useRouter } from "next/router";
 import React, { ReactElement, use, useEffect, useState } from "react";
@@ -49,7 +51,7 @@ export default function PostPage(): ReactElement {
       {loading ? (
         <PostLoader />
       ) : (
-        <div style={{ paddingTop: "5em" }}>
+        <div style={{ marginTop: "5em" }}>
           {postStateValue.selectedPost && (
             <PostItem
               post={postStateValue.selectedPost}
@@ -65,9 +67,14 @@ export default function PostPage(): ReactElement {
               }
             />
           )}
+          <Comments
+            user={user as User}
+            communityId={postStateValue.selectedPost?.communityId as string}
+            selectedPost={postStateValue.selectedPost}
+          />
         </div>
       )}
-      <div style={{ paddingTop: "5em" }}>
+      <div style={{ marginTop: "5em" }}>
         {communityStateValue.currentCommunity && (
           <About communityData={communityStateValue.currentCommunity} />
         )}
