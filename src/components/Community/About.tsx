@@ -105,7 +105,7 @@ function About({ communityData }: AboutProps): ReactElement {
 
   useEffect(() => {
     getAboutDescriptionFromDB();
-  }, [communityData]);
+  }, [user?.uid, communityData]);
 
   const onUpdateImage = async () => {
     if (!selectedFile) return;
@@ -158,11 +158,11 @@ function About({ communityData }: AboutProps): ReactElement {
         borderRadius={"0px 0px 5px 5px"}
       >
         <Stack>
-          {user?.uid === communityData.creatorId ? (
-            communityData.description ? (
-              <Flex direction={"column"}>
-                <Text fontSize={"14pt"}>
-                  {communityData.description}{" "}
+          {communityData.description ? (
+            <Flex direction={"column"}>
+              <Text fontSize={"14pt"}>
+                {communityData.description}{" "}
+                {user?.uid && user.uid === communityData.creatorId && (
                   <Icon
                     as={FiEdit}
                     onClick={() => setDisplayTextArea("unset")}
@@ -170,31 +170,29 @@ function About({ communityData }: AboutProps): ReactElement {
                     _hover={{ color: "brand.100" }}
                     boxSize={5}
                   />
-                </Text>
-                <Divider mt={5} />
-              </Flex>
-            ) : (
-              <Box
-                bg={"gray.100"}
-                my={3}
-                p={3}
-                borderRadius={5}
-                _hover={{
-                  border: "1px solid",
-                  borderColor: "brand.100",
-                  outline: "none",
-                  cursor: "pointer",
-                }}
-                onClick={() => setDisplayTextArea("unset")}
-                display={displayTextArea !== "unset" ? "unset" : "none"}
-              >
-                <Text color={"brand.100"} fontWeight={700}>
-                  Add description
-                </Text>
-              </Box>
-            )
+                )}
+              </Text>
+              <Divider mt={5} />
+            </Flex>
           ) : (
-            ""
+            <Box
+              bg={"gray.100"}
+              my={3}
+              p={3}
+              borderRadius={5}
+              _hover={{
+                border: "1px solid",
+                borderColor: "brand.100",
+                outline: "none",
+                cursor: "pointer",
+              }}
+              onClick={() => setDisplayTextArea("unset")}
+              display={displayTextArea !== "unset" ? "unset" : "none"}
+            >
+              <Text color={"brand.100"} fontWeight={700}>
+                Add description
+              </Text>
+            </Box>
           )}
           <Flex direction={"column"} display={displayTextArea}>
             <Textarea
