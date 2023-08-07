@@ -32,6 +32,7 @@ import { BiFace } from "react-icons/bi";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { FirestoreError, doc, getDoc, updateDoc } from "firebase/firestore";
 import { useSetRecoilState } from "recoil";
+import DescriptionInput from "./DescriptionInput";
 
 interface AboutProps {
   communityData: Community;
@@ -45,6 +46,8 @@ function About({ communityData }: AboutProps): ReactElement {
   const { selectedFile, onSelectFile } = useSelectFile();
   const setCommunityStateValue = useSetRecoilState(communityState);
   const [displayTextArea, setDisplayTextArea] = useState<string>("none");
+  const [displayEditTextArea, setDisplayEditTextArea] =
+    useState<string>("none");
   const [aboutDescription, setAboutDescription] = useState<string>("");
   const [characterSize, setCharacterSize] = useState<number>(500);
   const [loading, setLoading] = useState<boolean>(false);
@@ -71,6 +74,7 @@ function About({ communityData }: AboutProps): ReactElement {
       });
       setLoading(false);
       setDisplayTextArea("none");
+      getAboutDescriptionFromDB();
     } catch (error) {
       const firestoreError = error as FirestoreError;
       console.log(firestoreError.message);
@@ -105,7 +109,8 @@ function About({ communityData }: AboutProps): ReactElement {
 
   useEffect(() => {
     getAboutDescriptionFromDB();
-  }, [user?.uid, communityData]);
+    if (!aboutDescription) setAboutDescription(communityData.description!);
+  }, [user?.uid, communityData.description]);
 
   const onUpdateImage = async () => {
     if (!selectedFile) return;
@@ -194,45 +199,15 @@ function About({ communityData }: AboutProps): ReactElement {
               </Text>
             </Box>
           )}
-          <Flex direction={"column"} display={displayTextArea}>
-            <Textarea
-              placeholder="Tell us what your community is about?"
-              _placeholder={{ color: "gray.800" }}
-              bg={"gray.100"}
-              minHeight={"150px"}
-              onChange={handleChangeInput}
-              value={aboutDescription}
-            />
-            <Flex justify={"space-between"}>
-              <Stack>
-                <Text color={characterSize === 0 ? "red.500" : "black"}>
-                  {characterSize} characters remaining
-                </Text>
-              </Stack>
-              <Stack direction={"row"} gap={5}>
-                {loading ? (
-                  <Spinner />
-                ) : (
-                  <Text
-                    color={"brand.100"}
-                    fontWeight={700}
-                    cursor={"pointer"}
-                    onClick={saveDescriptionToDB}
-                  >
-                    Save
-                  </Text>
-                )}
-                <Text
-                  color={"red.500"}
-                  fontWeight={700}
-                  cursor={"pointer"}
-                  onClick={onCancelInput}
-                >
-                  Cancel
-                </Text>
-              </Stack>
-            </Flex>
-          </Flex>
+          <DescriptionInput
+            displayTextArea={displayTextArea}
+            aboutDescription={aboutDescription}
+            characterSize={characterSize}
+            loading={loading}
+            saveDescriptionToDB={saveDescriptionToDB}
+            onCancelInput={onCancelInput}
+            handleChangeInput={handleChangeInput}
+          />
           <Flex
             width={"100%"}
             p={2}
