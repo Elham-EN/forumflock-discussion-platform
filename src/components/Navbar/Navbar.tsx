@@ -19,13 +19,23 @@ export default function Navbar(): React.ReactElement {
       width={"100%"}
       zIndex={500}
     >
-      <Flex align={"center"} mt={2}>
+      <Flex align={"center"} my={2}>
         <Link href={"/"}>
-          <Icon
-            color={"brand.100"}
-            as={BiFace}
-            boxSize={{ base: 10, sm: "16" }}
-          />
+          <Flex mx={{ base: 0, md: 5 }} align={"center"}>
+            <Icon
+              color={"brand.100"}
+              as={BiFace}
+              boxSize={{ base: 10, sm: "16" }}
+            />
+            <Text
+              display={{ base: "none", md: "unset" }}
+              fontWeight={"700"}
+              fontFamily={"monospace"}
+              fontSize={"14pt"}
+            >
+              ForumFlock
+            </Text>
+          </Flex>
         </Link>
       </Flex>
       <Directory />
