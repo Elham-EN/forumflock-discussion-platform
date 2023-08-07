@@ -161,7 +161,7 @@ function PostItem(props: PostItemProps): ReactElement {
           >
             <Icon as={GoComment} boxSize={{ base: "5", md: "7" }} />
             <Text
-              mb={{ base: 1, md: 2 }}
+              mb={{ base: 0, md: 0 }}
               ml={1}
               fontSize={{ base: "10pt", md: "14" }}
             >

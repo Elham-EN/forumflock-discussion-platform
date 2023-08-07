@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Community, communityState } from "@/atoms/communitiesAtom";
 import {
   Box,
@@ -9,10 +10,17 @@ import {
   Spinner,
   Stack,
   Text,
+  Textarea,
 } from "@chakra-ui/react";
-import React, { ReactElement, useRef, useState } from "react";
+import React, {
+  ChangeEvent,
+  ReactElement,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import { FiCircle } from "react-icons/fi";
+import { FiCircle, FiEdit } from "react-icons/fi";
 import { FaBirthdayCake } from "react-icons/fa";
 import moment from "moment";
 import Link from "next/link";
@@ -22,7 +30,7 @@ import { auth, firestore, storage } from "@/firebase/clientApp";
 import useSelectFile from "@/hooks/useSelectFile";
 import { BiFace } from "react-icons/bi";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
-import { FirestoreError, doc, updateDoc } from "firebase/firestore";
+import { FirestoreError, doc, getDoc, updateDoc } from "firebase/firestore";
 import { useSetRecoilState } from "recoil";
 
 interface AboutProps {
@@ -36,6 +44,68 @@ function About({ communityData }: AboutProps): ReactElement {
   const [uploadingImage, setUploadingImage] = useState(false);
   const { selectedFile, onSelectFile } = useSelectFile();
   const setCommunityStateValue = useSetRecoilState(communityState);
+  const [displayTextArea, setDisplayTextArea] = useState<string>("none");
+  const [aboutDescription, setAboutDescription] = useState<string>("");
+  const [characterSize, setCharacterSize] = useState<number>(500);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const handleChangeInput = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    if (event.target.value.length > 500) return;
+    setAboutDescription(event.target.value);
+    setCharacterSize(500 - event.target.value.length);
+  };
+
+  const onCancelInput = () => {
+    setDisplayTextArea("none");
+    setAboutDescription("");
+    setCharacterSize(500);
+  };
+
+  const saveDescriptionToDB = async () => {
+    try {
+      setLoading(true);
+      // update community document in the communities collection
+      const communityRef = doc(firestore, "communities", communityData.id);
+      await updateDoc(communityRef, {
+        description: aboutDescription,
+      });
+      setLoading(false);
+      setDisplayTextArea("none");
+    } catch (error) {
+      const firestoreError = error as FirestoreError;
+      console.log(firestoreError.message);
+    }
+  };
+
+  const getAboutDescriptionFromDB = async () => {
+    try {
+      // Find the location of the document in the collection
+      const communityRef = doc(firestore, "communities", communityData.id);
+      // Fetch the community document
+      const communitySnap = await getDoc(communityRef);
+      if (!communitySnap.exists())
+        throw new Error("this document does not exist");
+      // Create CommunityDataObj
+      const communityDataObj = {
+        data: communitySnap.data() as Community,
+      };
+      // Update UI recoil global state
+      setCommunityStateValue((prev) => ({
+        ...prev,
+        currentCommunity: {
+          ...prev.currentCommunity,
+          description: communityDataObj.data.description,
+        } as Community,
+      }));
+    } catch (error) {
+      const firestoreError = error as FirestoreError;
+      console.log(firestoreError.message);
+    }
+  };
+
+  useEffect(() => {
+    getAboutDescriptionFromDB();
+  }, [communityData]);
 
   const onUpdateImage = async () => {
     if (!selectedFile) return;
@@ -63,7 +133,7 @@ function About({ communityData }: AboutProps): ReactElement {
   };
 
   return (
-    <Box position={"sticky"} top={20}>
+    <Box position={"sticky"} top={20} maxWidth={"400px"}>
       <Flex
         bg={"brand.200"}
         color={"white"}
@@ -88,6 +158,83 @@ function About({ communityData }: AboutProps): ReactElement {
         borderRadius={"0px 0px 5px 5px"}
       >
         <Stack>
+          {user?.uid === communityData.creatorId ? (
+            communityData.description ? (
+              <Flex direction={"column"}>
+                <Text fontSize={"14pt"}>
+                  {communityData.description}{" "}
+                  <Icon
+                    as={FiEdit}
+                    onClick={() => setDisplayTextArea("unset")}
+                    cursor={"pointer"}
+                    _hover={{ color: "brand.100" }}
+                    boxSize={5}
+                  />
+                </Text>
+                <Divider mt={5} />
+              </Flex>
+            ) : (
+              <Box
+                bg={"gray.100"}
+                my={3}
+                p={3}
+                borderRadius={5}
+                _hover={{
+                  border: "1px solid",
+                  borderColor: "brand.100",
+                  outline: "none",
+                  cursor: "pointer",
+                }}
+                onClick={() => setDisplayTextArea("unset")}
+                display={displayTextArea !== "unset" ? "unset" : "none"}
+              >
+                <Text color={"brand.100"} fontWeight={700}>
+                  Add description
+                </Text>
+              </Box>
+            )
+          ) : (
+            ""
+          )}
+          <Flex direction={"column"} display={displayTextArea}>
+            <Textarea
+              placeholder="Tell us what your community is about?"
+              _placeholder={{ color: "gray.800" }}
+              bg={"gray.100"}
+              minHeight={"150px"}
+              onChange={handleChangeInput}
+              value={aboutDescription}
+            />
+            <Flex justify={"space-between"}>
+              <Stack>
+                <Text color={characterSize === 0 ? "red.500" : "black"}>
+                  {characterSize} characters remaining
+                </Text>
+              </Stack>
+              <Stack direction={"row"} gap={5}>
+                {loading ? (
+                  <Spinner />
+                ) : (
+                  <Text
+                    color={"brand.100"}
+                    fontWeight={700}
+                    cursor={"pointer"}
+                    onClick={saveDescriptionToDB}
+                  >
+                    Save
+                  </Text>
+                )}
+                <Text
+                  color={"red.500"}
+                  fontWeight={700}
+                  cursor={"pointer"}
+                  onClick={onCancelInput}
+                >
+                  Cancel
+                </Text>
+              </Stack>
+            </Flex>
+          </Flex>
           <Flex
             width={"100%"}
             p={2}
