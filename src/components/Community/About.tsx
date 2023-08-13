@@ -46,8 +46,6 @@ function About({ communityData }: AboutProps): ReactElement {
   const { selectedFile, onSelectFile } = useSelectFile();
   const setCommunityStateValue = useSetRecoilState(communityState);
   const [displayTextArea, setDisplayTextArea] = useState<string>("none");
-  const [displayEditTextArea, setDisplayEditTextArea] =
-    useState<string>("none");
   const [aboutDescription, setAboutDescription] = useState<string>("");
   const [characterSize, setCharacterSize] = useState<number>(500);
   const [loading, setLoading] = useState<boolean>(false);
