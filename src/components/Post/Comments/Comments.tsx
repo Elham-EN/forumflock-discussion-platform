@@ -44,7 +44,7 @@ function Comments({
   const [comments, setComments] = useState<Comment[]>([]);
   const [fetchLoading, setFetchLoading] = useState<boolean>(true);
   const [createLoading, setCreateLoading] = useState<boolean>(false);
-  const [loadingDelete, setLoadingDelete] = useState<boolean>(false);
+  const [loadingDelete, setLoadingDelete] = useState<string>("");
   const setPostState = useSetRecoilState(postState);
 
   const onCreateComment = async () => {
@@ -113,16 +113,42 @@ function Comments({
     setFetchLoading(false);
   };
 
-  const onDeleteComment = async (comment: any) => {
-    // Delete comment document
-    // Update post numberOfComment -1
-    // Update client recoil global state
+  const onDeleteComment = async (comment: Comment) => {
+    setLoadingDelete(comment.id);
+    try {
+      const batch = writeBatch(firestore);
+      // Delete comment document
+      const commentDocRef = doc(firestore, "comments", comment.id);
+      batch.delete(commentDocRef);
+      // Update post numberOfComment -1
+      const postDocRef = doc(firestore, "posts", selectedPost?.id!);
+      batch.update(postDocRef, {
+        numberOfComments: increment(-1),
+      });
+      await batch.commit();
+      // Update client recoil global state
+      setPostState((prev) => ({
+        ...prev,
+        selectedPost: {
+          ...prev.selectedPost,
+          numberOfComments: prev.selectedPost?.numberOfComments! - 1,
+        } as Post,
+      }));
+      // Only include comments that does not match id of the comment
+      // we deleted
+      setComments((prev) => prev.filter((item) => item.id !== comment.id));
+    } catch (error) {
+      const firestoreError = error as FirestoreError;
+      console.log(firestoreError.message);
+    }
+    setLoadingDelete("");
   };
 
   useEffect(() => {
     if (!selectedPost) return;
     getPostComments();
-  }, [selectedPost]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedPost, comments]);
 
   return (
     <Box bg={"white"} borderRadius={"0px 0px 5px 5px"} p={3}>
@@ -177,7 +203,7 @@ function Comments({
                     key={comment.id}
                     comment={comment}
                     onDeleteComment={onDeleteComment}
-                    loadingDelete={false}
+                    loadingDelete={loadingDelete === comment.id}
                     userId={user?.uid}
                   />
                 ))}
