@@ -1,4 +1,4 @@
-import { Box, Flex, Icon, Stack, Text } from "@chakra-ui/react";
+import { Box, Flex, Icon, Spinner, Stack, Text } from "@chakra-ui/react";
 import { Timestamp } from "firebase/firestore";
 import moment from "moment";
 import React, { ReactElement } from "react";
@@ -41,6 +41,7 @@ export default function CommentItem({
           <Text color={"gray.600"}>
             {moment(new Date(comment.createdAt?.seconds * 1000)).fromNow()}
           </Text>
+          {loadingDelete && <Spinner size={"sm"} />}
         </Stack>
         <Text fontSize={"14pt"}>{comment.text}</Text>
         <Stack direction={"row"} cursor={"pointer"} color={"gray.500"}>
@@ -66,6 +67,7 @@ export default function CommentItem({
                   fontWeight={700}
                   fontSize={"14pt"}
                   _hover={{ color: "brand.100" }}
+                  onClick={() => onDeleteComment(comment)}
                 >
                   Delete
                 </Text>

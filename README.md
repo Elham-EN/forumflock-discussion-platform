@@ -1,6 +1,6 @@
 # 🌐 ForumFlock (Discussion Platform)
 
-Welcome to **ForumFlock**, an energetic and goal-oriented web application I've developed with the aim of enhancing academic collaboration and fostering community among students. It serves as a specialized digital platform where students can delve deep into their study materials, engage with peers on course-related topics, exchange educational insights, and broaden their understanding through meaningful interactions.
+In the heart of the remote learning era, university students needed a digital space to discuss academic topics, seek insights, and foster community spirit. That's where forumFlock came into the picture, an online discussion platform specifically curated for university students.
 
 ## 🚀 Purpose and Goal:
 
