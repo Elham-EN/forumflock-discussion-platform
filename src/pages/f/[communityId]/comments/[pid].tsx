@@ -74,11 +74,10 @@ export default function PostPage(): ReactElement {
           />
         </div>
       )}
-      <div style={{ marginTop: "5em" }}>
-        {communityStateValue.currentCommunity && (
-          <About communityData={communityStateValue.currentCommunity} />
-        )}
-      </div>
+
+      {communityStateValue.currentCommunity && (
+        <About communityData={communityStateValue.currentCommunity} />
+      )}
     </PageContent>
   );
 }
