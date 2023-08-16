@@ -41,7 +41,6 @@ export default function PostPage(): ReactElement {
   };
 
   useEffect(() => {
-    console.log("community", pid);
     if (pid && !postStateValue.selectedPost) {
       fetchPost();
     }

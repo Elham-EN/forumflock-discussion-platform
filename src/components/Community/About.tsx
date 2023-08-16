@@ -33,6 +33,7 @@ import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { FirestoreError, doc, getDoc, updateDoc } from "firebase/firestore";
 import { useSetRecoilState } from "recoil";
 import DescriptionInput from "./DescriptionInput";
+import useCommunityData from "@/hooks/useCommunityData";
 
 interface AboutProps {
   communityData: Community;
@@ -49,6 +50,7 @@ function About({ communityData }: AboutProps): ReactElement {
   const [aboutDescription, setAboutDescription] = useState<string>("");
   const [characterSize, setCharacterSize] = useState<number>(500);
   const [loading, setLoading] = useState<boolean>(false);
+  const { getMySnippets } = useCommunityData();
 
   const handleChangeInput = (event: ChangeEvent<HTMLTextAreaElement>) => {
     if (event.target.value.length > 500) return;
@@ -122,6 +124,17 @@ function About({ communityData }: AboutProps): ReactElement {
       await updateDoc(doc(firestore, "communities", communityData.id), {
         imageURL: downloadURL,
       });
+      // Update User document's sub collection mySnippets
+      await updateDoc(
+        doc(
+          firestore,
+          `users/${user?.uid}/communitySnippets`,
+          communityData.id
+        ),
+        {
+          imageURL: downloadURL,
+        }
+      );
       setCommunityStateValue((prev) => ({
         ...prev,
         currentCommunity: {
@@ -134,6 +147,12 @@ function About({ communityData }: AboutProps): ReactElement {
     }
     setUploadingImage(false);
   };
+
+  // Call this function to update mySnippets collection inside Community
+  // State with new data on imageURL
+  useEffect(() => {
+    getMySnippets();
+  }, [communityData.imageURL, uploadingImage]);
 
   return (
     <Box position={"sticky"} top={20} maxWidth={"400px"}>

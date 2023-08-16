@@ -26,6 +26,7 @@ interface UseCommunityDataHook {
   onJoinOrLeaveCommunity: (communityData: Community, isJoined: boolean) => void;
   loading: boolean;
   error: string;
+  getMySnippets: () => Promise<void>;
 }
 
 // The global state and it's functionailty are use multiple places in the application
@@ -69,6 +70,9 @@ export default function useCommunityData(): UseCommunityDataHook {
       const newSnippet: CommunitySnippet = {
         communityId: communityData.id,
         imageURL: communityData.imageURL || "",
+        // User who created this community and then leave and come back to
+        // rejoin the community will become moderator again
+        isModerator: user?.uid === communityData.creatorId,
       };
       // Creating a new community snippet if this user is joining the community
       batch.set(
@@ -199,5 +203,6 @@ export default function useCommunityData(): UseCommunityDataHook {
     onJoinOrLeaveCommunity,
     loading,
     error,
+    getMySnippets,
   };
 }

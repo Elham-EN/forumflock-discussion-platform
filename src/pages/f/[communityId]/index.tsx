@@ -12,6 +12,7 @@ import CreatePostLink from "@/components/Community/CreatePostLink";
 import Posts from "@/components/Post/Posts";
 import { useSetRecoilState } from "recoil";
 import About from "@/components/Community/About";
+import useCommunityData from "@/hooks/useCommunityData";
 
 interface CommunityPageProps {
   communityData: Community;
@@ -19,6 +20,7 @@ interface CommunityPageProps {
 
 function CommunityPage({ communityData }: CommunityPageProps): ReactElement {
   const setCommunityStateValue = useSetRecoilState(communityState);
+  const { communityStateValue } = useCommunityData();
 
   useEffect(() => {
     // Now the global state has access to current Community data
@@ -43,7 +45,7 @@ function CommunityPage({ communityData }: CommunityPageProps): ReactElement {
           <Posts communityData={communityData} />
         </>
         <>
-          <About communityData={communityData} />
+          <About communityData={communityStateValue.currentCommunity!} />
         </>
       </PageContent>
     </>
