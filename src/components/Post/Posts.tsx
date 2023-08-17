@@ -59,7 +59,7 @@ function Posts({ communityData }: PostsProps): ReactElement {
   // Call getPosts, when mounted on page
   useEffect(() => {
     getPosts();
-  }, []);
+  }, [communityData]);
   return (
     <>
       {loading ? (

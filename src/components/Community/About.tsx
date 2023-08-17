@@ -109,7 +109,10 @@ function About({ communityData }: AboutProps): ReactElement {
 
   useEffect(() => {
     getAboutDescriptionFromDB();
-    if (!aboutDescription) setAboutDescription(communityData.description!);
+    if (!aboutDescription) {
+      if (user?.uid && user.uid === communityData.creatorId)
+        setAboutDescription(communityData.description!);
+    }
   }, [user?.uid, communityData.description]);
 
   const onUpdateImage = async () => {
@@ -154,6 +157,20 @@ function About({ communityData }: AboutProps): ReactElement {
     getMySnippets();
   }, [communityData.imageURL, uploadingImage]);
 
+  // To ensure state is cleared when navigating between pages
+  useEffect(() => {
+    const handleRoutechange = () => {
+      setAboutDescription("");
+      setDisplayTextArea("none");
+    };
+    // When the route changes, reset the description
+    router.events.on("routeChangeStart", handleRoutechange);
+    // Cleanup the event listener on component unmount
+    return () => {
+      router.events.off("routeChangeStart", handleRoutechange);
+    };
+  }, [router.events]);
+
   return (
     <Box position={"sticky"} top={20} maxWidth={"400px"}>
       <Flex
@@ -183,7 +200,7 @@ function About({ communityData }: AboutProps): ReactElement {
           {communityData.description ? (
             <Flex direction={"column"}>
               <Text fontSize={"14pt"}>
-                {communityData.description}{" "}
+                {communityData.description}
                 {user?.uid && user.uid === communityData.creatorId && (
                   <Icon
                     as={FiEdit}
@@ -216,15 +233,21 @@ function About({ communityData }: AboutProps): ReactElement {
               </Text>
             </Box>
           )}
-          <DescriptionInput
-            displayTextArea={displayTextArea}
-            aboutDescription={aboutDescription}
-            characterSize={characterSize}
-            loading={loading}
-            saveDescriptionToDB={saveDescriptionToDB}
-            onCancelInput={onCancelInput}
-            handleChangeInput={handleChangeInput}
-          />
+
+          {
+            // To check if the user is creator of that community page (moderator)
+            user?.uid && user.uid === communityData.creatorId && (
+              <DescriptionInput
+                displayTextArea={displayTextArea}
+                aboutDescription={aboutDescription}
+                characterSize={characterSize}
+                loading={loading}
+                saveDescriptionToDB={saveDescriptionToDB}
+                onCancelInput={onCancelInput}
+                handleChangeInput={handleChangeInput}
+              />
+            )
+          }
           <Flex
             width={"100%"}
             p={2}

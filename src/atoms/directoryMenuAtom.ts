@@ -12,7 +12,7 @@ export interface DirectoryMenuItem {
 }
 
 // Directory Menu State
-interface DirectoryMenuState {
+export interface DirectoryMenuState {
   isOpen: boolean;
   selectedMenuItem: DirectoryMenuItem;
 }

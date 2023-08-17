@@ -33,7 +33,7 @@ export default function Communities(): ReactElement {
               link={`/f/${snippet.communityId}`}
               icon={BiFace}
               iconColor={"red"}
-              imageUrl={snippet.imageURL}
+              imageURL={snippet.imageURL}
             />
           ))}
       </Box>
@@ -65,7 +65,7 @@ export default function Communities(): ReactElement {
             link={`/f/${snippet.communityId}`}
             icon={BiFace}
             iconColor={"red"}
-            imageUrl={snippet.imageURL}
+            imageURL={snippet.imageURL}
           />
         ))}
       </Box>

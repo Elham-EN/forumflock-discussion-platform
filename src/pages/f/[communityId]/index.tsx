@@ -45,7 +45,9 @@ function CommunityPage({ communityData }: CommunityPageProps): ReactElement {
           <Posts communityData={communityData} />
         </>
         <>
-          <About communityData={communityStateValue.currentCommunity!} />
+          {communityStateValue.currentCommunity && (
+            <About communityData={communityStateValue.currentCommunity} />
+          )}
         </>
       </PageContent>
     </>
