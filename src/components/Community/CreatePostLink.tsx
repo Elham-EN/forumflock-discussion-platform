@@ -7,6 +7,7 @@ import { useSetRecoilState } from "recoil";
 import { authModalState } from "@/atoms/authModalAtom";
 import { IoImageOutline } from "react-icons/io5";
 import { BsLink45Deg } from "react-icons/bs";
+import useDirectory from "@/hooks/useDirectory";
 
 export default function CreatePostLink(): ReactElement {
   // create routes from dynamic data, A Dynamic Segment can be
@@ -14,6 +15,7 @@ export default function CreatePostLink(): ReactElement {
   const router = useRouter();
   const [user] = useAuthState(auth);
   const setAuthModalState = useSetRecoilState(authModalState);
+  const { toggleMenuOpen } = useDirectory();
 
   const onClick = () => {
     // if user is not authenticated
@@ -22,7 +24,12 @@ export default function CreatePostLink(): ReactElement {
       return;
     }
     const { communityId } = router.query;
-    router.push(`/f/${communityId}/submit`);
+    if (communityId) {
+      router.push(`/f/${communityId}/submit`);
+      return;
+    }
+    // open directory menu if communityId not exist
+    toggleMenuOpen();
   };
 
   return (
