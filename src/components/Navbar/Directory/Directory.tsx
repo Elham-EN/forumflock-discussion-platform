@@ -1,5 +1,13 @@
 import { ChevronDownIcon } from "@chakra-ui/icons";
-import { Flex, Icon, Menu, MenuButton, MenuList, Text } from "@chakra-ui/react";
+import {
+  Flex,
+  Icon,
+  Image,
+  Menu,
+  MenuButton,
+  MenuList,
+  Text,
+} from "@chakra-ui/react";
 import React, { ReactElement } from "react";
 import { TiHome } from "react-icons/ti";
 import Communities from "./Communities";
@@ -21,13 +29,31 @@ export default function Directory(): ReactElement {
         <Flex
           align={"center"}
           justify={"space-between"}
-          width={{ base: "none", lg: "200px" }}
+          width={{ base: "none", md: "50px", lg: "270px" }}
         >
           <Flex align={"center"}>
-            <Icon fontSize={30} as={TiHome} mr={{ base: 1, md: 2 }} />
+            {directoryState.selectedMenuItem.imageURL ? (
+              <Image
+                src={directoryState.selectedMenuItem.imageURL}
+                alt=""
+                borderRadius={"full"}
+                boxSize={"24px"}
+                mr={1}
+              />
+            ) : (
+              <>
+                <Icon
+                  fontSize={30}
+                  as={directoryState.selectedMenuItem.icon}
+                  color={directoryState.selectedMenuItem.iconColor}
+                  mr={{ base: 1, md: 2 }}
+                />
+              </>
+            )}
+
             <Flex display={{ base: "none", lg: "flex" }}>
-              <Text fontWeight={600} fontSize={"14pt"}>
-                Home
+              <Text fontWeight={600} fontSize={"12pt"}>
+                {directoryState.selectedMenuItem.displayText}
               </Text>
             </Flex>
           </Flex>
