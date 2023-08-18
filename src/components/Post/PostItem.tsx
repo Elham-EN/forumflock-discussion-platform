@@ -39,6 +39,7 @@ interface PostItemProps {
   ) => void;
   onDeletePost: (post: Post) => Promise<boolean>;
   onSelectPost?: (post: Post) => void;
+  homePage?: boolean;
 }
 
 function PostItem(props: PostItemProps): ReactElement {
