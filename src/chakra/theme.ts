@@ -10,8 +10,9 @@ import { Input } from "./Input";
 const theme = extendTheme({
   colors: {
     brand: {
-      100: "#8c52ff",
-      200: "#9661ff",
+      100: "#ef476f",
+      200: "#ef233c",
+      300: "#a663cc",
     },
     fonts: {
       body: `'Open Sans', sans-serif`,

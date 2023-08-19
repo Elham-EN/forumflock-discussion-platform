@@ -1,8 +1,7 @@
 import React, { ReactElement } from "react";
 import { Community } from "@/atoms/communitiesAtom";
 import useCommunityData from "@/hooks/useCommunityData";
-import { Avatar, Box, Button, Flex, Icon, Image, Text } from "@chakra-ui/react";
-import { BsBellFill } from "react-icons/bs";
+import { Box, Button, Flex, Icon, Image, Text } from "@chakra-ui/react";
 import { BiFace } from "react-icons/bi";
 
 interface HeaderProps {
@@ -22,19 +21,16 @@ function Header({ communityData }: HeaderProps): ReactElement {
     (item) => item.communityId === communityData.id
   );
   return (
-    <Flex direction={"column"} width={"100%"} height={"256px"}>
-      <Box height={"50%"} bgGradient="linear(to-r, brand.100, #ca8aff)" />
+    <Flex direction={"column"} width={"100%"} height={"150px"}>
+      <Box height={"30%"} bgGradient="linear(to-r, brand.100, brand.200)" />
       <Flex bg={"white"} justify={"center"} flexGrow={1}>
-        <Flex width={"95%"} maxWidth={"1460px"} gap={1}>
+        <Flex width={"95%"} maxWidth={"1460px"} align={"center"} gap={1}>
           {communityStateValue.currentCommunity?.imageURL ? (
             <Image
               src={communityStateValue.currentCommunity.imageURL}
               alt="community avatar"
-              // maxHeight={"100px"}
               boxSize={"100px"}
               borderRadius={"full"}
-              position="relative"
-              top={-10}
               border="4px solid"
               borderColor={"white"}
             />
@@ -53,6 +49,7 @@ function Header({ communityData }: HeaderProps): ReactElement {
           )}
           <Flex
             padding={"5px 16px"}
+            my={3}
             flexDirection={{ base: "column", md: "row" }}
           >
             <Flex flexDirection={"column"} mr={"30px"}>
@@ -68,8 +65,9 @@ function Header({ communityData }: HeaderProps): ReactElement {
               </Text>
             </Flex>
 
-            <Flex gap={5} alignSelf={"flex-start"} mt={2}>
+            <Flex gap={0} mt={2} mr={"30px"}>
               <Button
+                w={"100%"}
                 variant={"outline"}
                 size={"md"}
                 px={10}
@@ -80,9 +78,9 @@ function Header({ communityData }: HeaderProps): ReactElement {
                 onClick={() => onJoinOrLeaveCommunity(communityData, isJoined)}
                 isLoading={loading}
               >
-                {isJoined ? "Joined" : "Join"}
+                {isJoined ? "Joined" : "Join Community"}
               </Button>
-              {isJoined ? (
+              {/* {isJoined ? (
                 <Icon
                   as={BsBellFill}
                   boxSize={10}
@@ -97,7 +95,7 @@ function Header({ communityData }: HeaderProps): ReactElement {
                 />
               ) : (
                 ""
-              )}
+              )} */}
             </Flex>
           </Flex>
         </Flex>

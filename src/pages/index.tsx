@@ -62,12 +62,12 @@ const Home: NextPage = () => {
 
   return (
     <PageContent>
-      <Flex direction={"column"} mt={16}>
+      <>
         <CreatePostLink />
         {loading ? (
           <PostLoader />
         ) : (
-          <Stack>
+          <Stack spacing={3}>
             {postStateValue.posts.map((post) => (
               <PostItem
                 key={post.id}
@@ -86,8 +86,12 @@ const Home: NextPage = () => {
             ))}
           </Stack>
         )}
-      </Flex>
-      <>f</>
+      </>
+      <>
+        <Stack>
+          <Text>About</Text>
+        </Stack>
+      </>
     </PageContent>
   );
 };

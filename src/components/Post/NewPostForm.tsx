@@ -32,6 +32,7 @@ import useSelectFile from "@/hooks/useSelectFile";
 interface NewPostFormProps {
   user: User;
   communityId: string;
+  communityImageURL?: string;
 }
 
 export interface FormTabsType {
@@ -64,7 +65,11 @@ interface TextInputType {
   body: string;
 }
 
-function NewPostForm({ user, communityId }: NewPostFormProps): ReactElement {
+function NewPostForm({
+  user,
+  communityId,
+  communityImageURL,
+}: NewPostFormProps): ReactElement {
   const router = useRouter();
   // Track which tab item is currently selected
   const [selectedTab, setSelectedTab] = useState<string>(formTabs[0].title);
@@ -80,6 +85,7 @@ function NewPostForm({ user, communityId }: NewPostFormProps): ReactElement {
     // Create new post object => type Post
     const newPost: Post = {
       communityId: communityId,
+      communityImageURL: communityImageURL || "",
       creatorId: user.uid,
       creatorDisplayName: user.email!.split("@")[0],
       title: textInputs.title,

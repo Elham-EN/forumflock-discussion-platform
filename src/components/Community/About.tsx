@@ -172,14 +172,14 @@ function About({ communityData }: AboutProps): ReactElement {
   }, [router.events]);
 
   return (
-    <Box position={"sticky"} top={20} maxWidth={"400px"}>
+    <Box position={"sticky"} top={36} maxWidth={"400px"} boxShadow="2xl">
       <Flex
         bg={"brand.200"}
         color={"white"}
         align={"center"}
         justify={"space-between"}
         p={5}
-        borderRadius={"5px 5px 0px 0px"}
+        borderRadius={"15px 15px 0px 0px"}
       >
         <Text fontSize={"14pt"} fontWeight={700}>
           About Community
@@ -194,7 +194,7 @@ function About({ communityData }: AboutProps): ReactElement {
         direction={"column"}
         p={3}
         bg={"white"}
-        borderRadius={"0px 0px 5px 5px"}
+        borderRadius={"0px 0px 15px 15px"}
       >
         <Stack>
           {communityData.description ? (

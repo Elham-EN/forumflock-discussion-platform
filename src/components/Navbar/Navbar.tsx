@@ -15,16 +15,22 @@ export default function Navbar(): React.ReactElement {
   const { onSelectMenuItem } = useDirectory();
   return (
     <Flex
-      bg={"white"}
-      height={"70px"}
-      padding={"6px 3px"}
-      position={"fixed"}
-      width={"100%"}
-      zIndex={500}
+      bg="white"
+      height="60px"
+      padding="6px 10px"
+      justify={{ md: "space-between" }}
+      position="sticky"
+      top="4px"
+      zIndex="999"
+      // Rounded props
+      border="1px solid"
+      borderColor="gray.300"
+      borderRadius={10}
+      m={{ base: 1, md: 1.5 }}
+      shadow="lg"
     >
       <Flex align={"center"} my={2}>
         <Flex
-          mx={{ base: 0, md: 5 }}
           align={"center"}
           onClick={() => onSelectMenuItem(defaultMenuItem)}
           cursor={"pointer"}
@@ -32,19 +38,19 @@ export default function Navbar(): React.ReactElement {
           <Icon
             color={"brand.100"}
             as={BiFace}
-            boxSize={{ base: 10, sm: "16" }}
+            boxSize={{ base: 10, sm: "14" }}
           />
           <Text
             display={{ base: "none", md: "unset" }}
             fontWeight={"700"}
             fontFamily={"monospace"}
-            fontSize={"14pt"}
+            fontSize={"24pt"}
           >
             ForumFlock
           </Text>
         </Flex>
       </Flex>
-      <Directory />
+      {user?.uid && <Directory />}
       <SearchInput />
       <RightContent user={user} />
     </Flex>

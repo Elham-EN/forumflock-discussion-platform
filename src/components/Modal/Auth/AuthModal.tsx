@@ -50,7 +50,7 @@ export default function AuthModal() {
         data-testid="auth-modal"
       >
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent borderRadius={"16px"}>
           <ModalHeader textAlign={"center"}>
             {modalState.view === "login" ? "Login" : "Signup"}
             {modalState.view === "resetPassword" && "Reset Password"}

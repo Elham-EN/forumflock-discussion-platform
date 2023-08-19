@@ -14,7 +14,7 @@ export default function SearchInput({}: SearchInputProps) {
         </InputLeftElement>
         <Input
           type="text"
-          placeholder="Search Feddit"
+          placeholder="Search ForumFlock"
           fontSize={"14pt"}
           _placeholder={{ color: "gray.500" }}
           _hover={{ bg: "white", border: "1px solid", borderColor: "blue.500" }}
@@ -24,8 +24,9 @@ export default function SearchInput({}: SearchInputProps) {
             borderColor: "blue.500",
           }}
           height={"48px"}
-          bg={"gray.50"}
+          bg={"gray.200"}
           borderColor={"gray.400"}
+          borderRadius={"16px"}
         />
       </InputGroup>
     </Flex>

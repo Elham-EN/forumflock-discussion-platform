@@ -23,13 +23,13 @@ export default function Submit(): ReactElement {
       <>
         <Box
           display={"flex"}
-          alignItems={"flex-end"}
+          alignItems={"center"}
           fontSize={"24px"}
           borderBottom={"1px solid"}
           borderBottomColor={"white"}
           p={"5px 0px 5px 5px"}
-          gap={2}
-          height={"180px"}
+          gap={0}
+          height={"100px"}
         >
           <Icon as={MdCreate} mb={2} />
           <Text fontSize={"18pt"} fontWeight={700} fontFamily={"sans-serif"}>
@@ -51,14 +51,15 @@ export default function Submit(): ReactElement {
           <NewPostForm
             user={user}
             communityId={router.query.communityId as string}
+            communityImageURL={communityStateValue.currentCommunity?.imageURL}
           />
         )}
       </>
-      <div style={{ marginTop: "12.5em" }}>
+      <>
         {communityStateValue.currentCommunity && (
           <About communityData={communityStateValue.currentCommunity} />
         )}
-      </div>
+      </>
     </PageContent>
   );
 }

@@ -8,7 +8,7 @@ import PostLoader from "@/components/Post/PostLoader";
 import { auth, firestore } from "@/firebase/clientApp";
 import useCommunityData from "@/hooks/useCommunityData";
 import UsePosts from "@/hooks/usePosts";
-import { Text } from "@chakra-ui/react";
+import { Flex, Stack, Text } from "@chakra-ui/react";
 import { User } from "firebase/auth";
 import { FirestoreError, doc, getDoc } from "firebase/firestore";
 import { useRouter } from "next/router";
@@ -50,7 +50,7 @@ export default function PostPage(): ReactElement {
       {loading ? (
         <PostLoader />
       ) : (
-        <div style={{ marginTop: "5em" }}>
+        <Stack direction={"column"} spacing={3}>
           {postStateValue.selectedPost && (
             <PostItem
               post={postStateValue.selectedPost}
@@ -71,7 +71,7 @@ export default function PostPage(): ReactElement {
             communityId={postStateValue.selectedPost?.communityId as string}
             selectedPost={postStateValue.selectedPost}
           />
-        </div>
+        </Stack>
       )}
 
       {communityStateValue.currentCommunity && (

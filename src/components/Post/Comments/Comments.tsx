@@ -151,13 +151,11 @@ function Comments({
   }, [selectedPost, comments]);
 
   return (
-    <Box bg={"white"} borderRadius={"0px 0px 5px 5px"} p={3}>
+    <Box mt={6} bg={"white"} borderRadius={"16px"} p={3} boxShadow={"2xl"}>
       <Flex
         direction={"column"}
-        pl={10}
-        pr={4}
         mb={6}
-        fontSize={"14pt"}
+        fontSize={{ base: "12pt", md: "14pt" }}
         width={"100%"}
       >
         {!fetchLoading && (

@@ -113,7 +113,7 @@ function UserMenu({ user }: UserMenuProps): ReactElement {
               padding={1}
               height={10}
               width={10}
-              borderRadius={5}
+              borderRadius={"full"}
               as={BiUser}
               bg={"gray.200"}
               mt={1.5}

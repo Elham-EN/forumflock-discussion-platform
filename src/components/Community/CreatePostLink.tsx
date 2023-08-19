@@ -8,6 +8,7 @@ import { authModalState } from "@/atoms/authModalAtom";
 import { IoImageOutline } from "react-icons/io5";
 import { BsLink45Deg } from "react-icons/bs";
 import useDirectory from "@/hooks/useDirectory";
+import { BiFace } from "react-icons/bi";
 
 export default function CreatePostLink(): ReactElement {
   // create routes from dynamic data, A Dynamic Segment can be
@@ -38,17 +39,14 @@ export default function CreatePostLink(): ReactElement {
       align={"center"}
       bg={"white"}
       height={"76px"}
-      borderRadius={5}
+      borderRadius={16}
       border={"1px solid"}
       borderColor={"gray.300"}
       p={2}
       mb={4}
+      boxShadow="2xl"
     >
-      <Image
-        src="/images/fedditLogoNoText1.png"
-        width={"50px"}
-        alt="brand logo"
-      />
+      <Icon as={BiFace} width={"50px"} boxSize={"28pt"} color={"brand.100"} />
       <Input
         bg={"gray.200"}
         placeholder="Create Post"

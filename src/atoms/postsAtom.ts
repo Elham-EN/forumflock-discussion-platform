@@ -13,7 +13,6 @@ export interface Post {
   imageURL?: string;
   communityImageURL?: string;
   createdAt: Timestamp;
-  postId: string;
 }
 
 export interface PostVote {

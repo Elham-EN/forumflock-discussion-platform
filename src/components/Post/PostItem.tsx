@@ -12,8 +12,10 @@ import {
 } from "@chakra-ui/react";
 import { FirestoreError } from "firebase/firestore";
 import moment from "moment";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { ReactElement, useState } from "react";
+import { BiFace } from "react-icons/bi";
 import {
   BsShare,
   BsHandThumbsUp,
@@ -77,10 +79,11 @@ function PostItem(props: PostItemProps): ReactElement {
       border={"1px solid"}
       bg={"white"}
       borderColor={singlePostPage ? "white" : "gray.300"}
-      borderRadius={5}
-      _hover={{ borderColor: singlePostPage ? "none" : "gray.500" }}
+      borderRadius={15}
+      _hover={{ borderColor: singlePostPage ? "none" : "brand.100" }}
       cursor={singlePostPage ? "unset" : "pointer"}
       onClick={() => props.onSelectPost && props.onSelectPost(props.post)}
+      boxShadow="xl"
     >
       <Flex
         direction={"column"}
@@ -90,7 +93,7 @@ function PostItem(props: PostItemProps): ReactElement {
         p={2}
         mt={singlePostPage ? 2.5 : "0"}
         width={"40px"}
-        borderRadius={5}
+        borderLeftRadius={15}
       >
         <Icon
           as={BsHandThumbsUp}
@@ -121,37 +124,64 @@ function PostItem(props: PostItemProps): ReactElement {
             <Text mr={2}>{error}</Text>
           </Alert>
         )}
-        <Stack spacing={1} p={"10px"}>
-          <Stack direction={"row"} spacing={3}>
-            {/** Display Community'image only in the homepage not coummunity*/}
+        <Stack spacing={1} p={"10px"} direction={{ base: "column", lg: "row" }}>
+          {/** Display Community'image only in the homepage not coummunity*/}
+          {props.homePage && (
+            <Flex gap={3}>
+              {props.post.communityImageURL ? (
+                <Image
+                  src={props.post.communityImageURL}
+                  alt=""
+                  borderRadius={"full"}
+                  boxSize={"20pt"}
+                />
+              ) : (
+                <Icon as={BiFace} fontSize={"20pt"} color={"brand.100"} />
+              )}
+              <Link href={`f/${props.post.communityId}`}>
+                <Text
+                  color={"brand.100"}
+                  fontWeight={600}
+                  onClick={(event) => event.stopPropagation()}
+                >
+                  {props.post.communityId}
+                </Text>
+              </Link>
+            </Flex>
+          )}
+          <Flex>
             <Text color={"gray.500"}>
               Posted by u/{props.post.creatorDisplayName}
             </Text>
             <Text color={"gray.500"}>
               {moment(new Date(props.post.createdAt?.seconds * 1000)).fromNow()}
             </Text>
-          </Stack>
-          <Text fontSize={"16pt"} fontWeight={600}>
-            {props.post.title}
-          </Text>
-          <Text fontSize={"13pt"} mb={3} p={3}>
-            {props.post.body}
-          </Text>
-          {props.post.imageURL && (
-            <Flex justify={"center"}>
-              {loadingImage && (
-                <Skeleton height={"200px"} width={"100%"} borderRadius={5} />
-              )}
-              <Image
-                src={props.post.imageURL}
-                alt="post image content"
-                maxHeight={"460px"}
-                display={loadingImage ? "none" : "unset"}
-                onLoad={() => setLoadingImage(false)}
-              />
-            </Flex>
-          )}
+          </Flex>
         </Stack>
+        <Text fontSize={"16pt"} fontWeight={600} px={3}>
+          {props.post.title}
+        </Text>
+        <Text fontSize={"13pt"} mb={1} p={3}>
+          {props.post.body}
+        </Text>
+        {props.post.imageURL && (
+          <Flex justify={"center"} align={"center"}>
+            {loadingImage && (
+              <Skeleton height={"200px"} width={"100%"} borderRadius={5} />
+            )}
+            <Image
+              src={props.post.imageURL}
+              alt="Image for post"
+              maxHeight="450px"
+              maxWidth="100%"
+              borderRadius="16px"
+              display={loadingImage ? "none" : "unset"}
+              onLoad={() => setLoadingImage(false)}
+              px={2}
+            />
+          </Flex>
+        )}
+
         <Flex ml={1} mb={1} color={"gray.500"} fontWeight={600}>
           <Flex
             align={"center"}

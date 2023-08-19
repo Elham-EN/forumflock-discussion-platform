@@ -64,15 +64,17 @@ function CommentInput({
         </>
       ) : (
         <Flex
+          direction={"column"}
           align={"center"}
           justify={"space-between"}
           border={"1px solid"}
           borderColor={"gray.300"}
           borderRadius={5}
           p={5}
+          gap={10}
         >
           <Text fontWeight={600}>Log in or sign up to leave a comment</Text>
-          <AuthButtons />
+          <AuthButtons displayType="flex" />
         </Flex>
       )}
     </Flex>

@@ -31,7 +31,13 @@ export default function CommentItem({
   userId,
 }: CommentItemProps): ReactElement {
   return (
-    <Flex mt={1}>
+    <Flex
+      mt={1}
+      border={"1px solid"}
+      p={3}
+      borderColor={"gray.500"}
+      borderRadius={"16px"}
+    >
       <Box mr={2}>
         <Icon boxSize={10} as={BiFace} />
       </Box>

@@ -10,12 +10,13 @@ interface PageContentProps {
 function PageContent({ children }: PageContentProps): ReactElement {
   return (
     <Flex justify={"center"} padding={"16px 0px"}>
-      <Flex width={"98%"} justify={"center"} maxWidth={"1460px"}>
+      <Flex width={"95%"} justify={"center"} maxWidth={"1460px"}>
         {/* LHS */}
         <Flex
           direction={"column"}
           width={{ base: "100%", md: "65%" }}
           mr={{ base: 0, md: 6 }}
+          flexGrow={1}
         >
           {children && children[0 as keyof typeof children]}
         </Flex>
@@ -23,7 +24,7 @@ function PageContent({ children }: PageContentProps): ReactElement {
         <Flex
           direction={"column"}
           display={{ base: "none", md: "flex" }}
-          flexGrow={1}
+          flexGrow={0}
         >
           {children && children[1 as keyof typeof children]}
         </Flex>
