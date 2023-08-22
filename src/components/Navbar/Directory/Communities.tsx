@@ -1,4 +1,5 @@
-import React, { ReactElement, useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { ReactElement, useEffect, useState } from "react";
 import CreateCommunityModal from "../../Modal/CreateCommunity/CreateCommunityModal";
 import { Flex, Icon, MenuItem, Box, Text } from "@chakra-ui/react";
 import { GrAdd } from "react-icons/gr";
@@ -6,10 +7,26 @@ import { useRecoilValue } from "recoil";
 import { communityState } from "@/atoms/communitiesAtom";
 import MenuListItem from "./MenuListItem";
 import { BiFace } from "react-icons/bi";
+import useCommunityData from "@/hooks/useCommunityData";
+import { useRouter } from "next/router";
 
 export default function Communities(): ReactElement {
   const [open, setOpen] = useState<boolean>(false);
   const mySnippets = useRecoilValue(communityState).mySnippets;
+  const { getMySnippets } = useCommunityData();
+  const router = useRouter();
+
+  // Update Recoil Global State based on Navigating to different page
+  useEffect(() => {
+    const handleRouteChange = async () => {
+      await getMySnippets();
+    };
+    router.events.on("routeChangeStart", handleRouteChange);
+    return () => {
+      router.events.off("routeChangeStart", handleRouteChange);
+    };
+  }, [router.events]);
+
   return (
     <>
       <CreateCommunityModal open={open} handleClose={() => setOpen(false)} />

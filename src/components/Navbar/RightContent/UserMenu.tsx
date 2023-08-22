@@ -43,12 +43,16 @@ function UserMenu({ user }: UserMenuProps): ReactElement {
             <MenuButton
               cursor={"pointer"}
               padding={"5px"}
-              borderRadius={5}
-              outline="1px solid"
-              outlineColor="gray.300"
+              // borderRadius={5}
+              // outline="1px solid"
+              // outlineColor="gray.300"
             >
-              <Flex align={"center"}>
-                <Icon boxSize={7} as={FaUserAstronaut} />
+              <Flex
+                align={"center"}
+                borderLeft={"1px solid"}
+                borderColor={"gray.600"}
+              >
+                <Icon ml={3} boxSize={7} as={FaUserAstronaut} />
                 <Flex
                   direction={"column"}
                   display={{ base: "none", lg: "flex" }}

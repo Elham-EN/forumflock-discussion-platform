@@ -1,7 +1,17 @@
-import { Box, Flex, Icon, Spinner, Stack, Text } from "@chakra-ui/react";
+import { auth } from "@/firebase/clientApp";
+import {
+  Box,
+  Flex,
+  Icon,
+  Spinner,
+  Stack,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
 import { Timestamp } from "firebase/firestore";
 import moment from "moment";
 import React, { ReactElement } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { BiFace } from "react-icons/bi";
 import { BsHandThumbsDown, BsHandThumbsUp } from "react-icons/bs";
 
@@ -30,6 +40,17 @@ export default function CommentItem({
   loadingDelete,
   userId,
 }: CommentItemProps): ReactElement {
+  const [user] = useAuthState(auth);
+  const toast = useToast({
+    title: "Functionality Coming Soon.",
+    description: "Currently, this functionality is not available",
+    status: "success",
+    duration: 9000,
+    isClosable: true,
+    containerStyle: {
+      width: "600px",
+    },
+  });
   return (
     <Flex
       mt={1}
@@ -51,24 +72,40 @@ export default function CommentItem({
         </Stack>
         <Text fontSize={"14pt"}>{comment.text}</Text>
         <Stack direction={"row"} cursor={"pointer"} color={"gray.500"}>
-          <Icon as={BsHandThumbsUp} boxSize={6} />
+          {/* <Icon as={BsHandThumbsUp} boxSize={6} onClick={() => toast()} />
           <Text fontSize={"14pt"} color={"brand.100"}>
             25
           </Text>
-          <Icon as={BsHandThumbsDown} boxSize={6} />
+          <Icon as={BsHandThumbsDown} boxSize={6} onClick={() => toast()} />
           <Text fontSize={"14pt"} color={"red.600"}>
             5
-          </Text>
-          <Stack direction={"row"} ml={3}>
+          </Text> */}
+
+          {/* {user?.uid && (
+            <Stack>
+              <Text
+                fontWeight={700}
+                fontSize={"14pt"}
+                _hover={{ color: "gray.800" }}
+                cursor={"pointer"}
+                onClick={() => toast()}
+              >
+                Reply
+              </Text>
+            </Stack>
+          )} */}
+
+          <Stack direction={"row"} ml={0}>
             {userId === comment.creatorId && (
               <>
-                <Text
+                {/* <Text
                   fontWeight={700}
                   fontSize={"14pt"}
-                  _hover={{ color: "brand.100" }}
+                  _hover={{ color: "gray.800" }}
+                  onClick={() => toast()}
                 >
                   Edit
-                </Text>
+                </Text> */}
                 <Text
                   fontWeight={700}
                   fontSize={"14pt"}

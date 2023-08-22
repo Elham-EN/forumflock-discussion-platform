@@ -23,7 +23,7 @@ function RightContent({ user }: RightContentProps): ReactElement {
         {user ? <Icons /> : <AuthButtons displayType="none" />}
         <Flex align={"center"} gap={1}>
           <UserMenu user={user} />
-          <Icon as={BsChevronDown} boxSize={"12pt"} />
+          {!user && <Icon as={BsChevronDown} boxSize={"12pt"} />}
         </Flex>
       </Flex>
     </>

@@ -52,7 +52,7 @@ export default function Icons(): ReactElement {
             </span>
           </Tooltip>
         </Flex>
-        <Flex
+        {/* <Flex
           mx={2.5}
           cursor={"pointer"}
           padding={1}
@@ -64,7 +64,7 @@ export default function Icons(): ReactElement {
               <Icon as={BsPlusLg} boxSize={"7"} />
             </span>
           </Tooltip>
-        </Flex>
+        </Flex> */}
       </>
     </Flex>
   );

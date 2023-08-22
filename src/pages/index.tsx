@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // ensures that the component follows the expected structure and
 // has the correct props according to the NextPage
 import type { NextPage } from "next";

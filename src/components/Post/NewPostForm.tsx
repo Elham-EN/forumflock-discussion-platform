@@ -4,6 +4,7 @@ import {
   AlertIcon,
   AlertTitle,
   Flex,
+  Text,
 } from "@chakra-ui/react";
 import React, { ChangeEvent, ReactElement, useState } from "react";
 import { IoCreate } from "react-icons/io5";
@@ -169,6 +170,38 @@ function NewPostForm({
             onSelectImage={onSelectFile}
             selectedFile={selectedFile}
           />
+        )}
+        {selectedTab === "Link" && (
+          <Flex w={"full"} justify={"center"}>
+            <Flex
+              direction="column"
+              bg={"brand.100"}
+              p={10}
+              color={"white"}
+              textAlign={"center"}
+            >
+              <Text fontSize={"2xl"} fontWeight={700}>
+                Functionality Coming Soon
+              </Text>
+              <Text>Currently, this functionality is not available</Text>
+            </Flex>
+          </Flex>
+        )}
+        {selectedTab === "Poll" && (
+          <Flex w={"full"} justify={"center"}>
+            <Flex
+              direction="column"
+              bg={"brand.100"}
+              p={10}
+              color={"white"}
+              textAlign={"center"}
+            >
+              <Text fontSize={"2xl"} fontWeight={700}>
+                Functionality Coming Soon
+              </Text>
+              <Text>Currently, this functionality is not available</Text>
+            </Flex>
+          </Flex>
         )}
       </Flex>
       {error && (

@@ -9,6 +9,7 @@ import {
   Spinner,
   Stack,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import { FirestoreError } from "firebase/firestore";
 import moment from "moment";
@@ -74,13 +75,28 @@ function PostItem(props: PostItemProps): ReactElement {
     }
     setLoadingDelete(false);
   };
+
+  const toast = useToast({
+    title: "Functionality Coming Soon.",
+    description: "Currently, this functionality is not available",
+    status: "success",
+    duration: 9000,
+    isClosable: true,
+    containerStyle: {
+      width: "600px",
+    },
+  });
+
   return (
     <Flex
       border={"1px solid"}
       bg={"white"}
       borderColor={singlePostPage ? "white" : "gray.300"}
       borderRadius={15}
-      _hover={{ borderColor: singlePostPage ? "none" : "brand.100" }}
+      _hover={{
+        // borderColor: singlePostPage ? "none" : "brand.100",
+        boxShadow: singlePostPage ? "none" : "dark-lg",
+      }}
       cursor={singlePostPage ? "unset" : "pointer"}
       onClick={() => props.onSelectPost && props.onSelectPost(props.post)}
       boxShadow="xl"
@@ -127,7 +143,7 @@ function PostItem(props: PostItemProps): ReactElement {
         <Stack spacing={1} p={"10px"} direction={{ base: "column", lg: "row" }}>
           {/** Display Community'image only in the homepage not coummunity*/}
           {props.homePage && (
-            <Flex gap={3}>
+            <Flex gap={1}>
               {props.post.communityImageURL ? (
                 <Image
                   src={props.post.communityImageURL}
@@ -153,7 +169,7 @@ function PostItem(props: PostItemProps): ReactElement {
             <Text color={"gray.500"}>
               Posted by u/{props.post.creatorDisplayName}
             </Text>
-            <Text color={"gray.500"}>
+            <Text ml={1} color={"gray.500"}>
               {moment(new Date(props.post.createdAt?.seconds * 1000)).fromNow()}
             </Text>
           </Flex>
@@ -206,6 +222,10 @@ function PostItem(props: PostItemProps): ReactElement {
             borderRadius={5}
             _hover={{ bg: "gray.200" }}
             cursor={"pointer"}
+            onClick={(event) => {
+              event.stopPropagation();
+              toast();
+            }}
           >
             <Icon as={BsShare} boxSize={{ base: "5", md: "7" }} />
             <Text
@@ -222,6 +242,10 @@ function PostItem(props: PostItemProps): ReactElement {
             borderRadius={5}
             _hover={{ bg: "gray.200" }}
             cursor={"pointer"}
+            onClick={(event) => {
+              event.stopPropagation();
+              toast();
+            }}
           >
             <Icon as={BsBookmark} boxSize={{ base: "5", md: "7" }} />
             <Text

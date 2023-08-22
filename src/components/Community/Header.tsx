@@ -29,7 +29,7 @@ function Header({ communityData }: HeaderProps): ReactElement {
             <Image
               src={communityStateValue.currentCommunity.imageURL}
               alt="community avatar"
-              boxSize={"100px"}
+              boxSize={"80px"}
               borderRadius={"full"}
               border="4px solid"
               borderColor={"white"}

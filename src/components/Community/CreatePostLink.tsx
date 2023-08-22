@@ -5,7 +5,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase/clientApp";
 import { useSetRecoilState } from "recoil";
 import { authModalState } from "@/atoms/authModalAtom";
-import { IoImageOutline } from "react-icons/io5";
+import { IoCreateOutline, IoImageOutline } from "react-icons/io5";
 import { BsLink45Deg } from "react-icons/bs";
 import useDirectory from "@/hooks/useDirectory";
 import { BiFace } from "react-icons/bi";
@@ -46,7 +46,13 @@ export default function CreatePostLink(): ReactElement {
       mb={4}
       boxShadow="2xl"
     >
-      <Icon as={BiFace} width={"50px"} boxSize={"28pt"} color={"brand.100"} />
+      <Icon
+        as={IoCreateOutline}
+        width={"50px"}
+        boxSize={"28pt"}
+        color={"gray.400"}
+        mr={2}
+      />
       <Input
         bg={"gray.200"}
         placeholder="Create Post"
