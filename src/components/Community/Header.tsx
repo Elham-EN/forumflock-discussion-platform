@@ -29,7 +29,7 @@ function Header({ communityData }: HeaderProps): ReactElement {
             <Image
               src={communityStateValue.currentCommunity.imageURL}
               alt="community avatar"
-              boxSize={"80px"}
+              boxSize={"100px"}
               borderRadius={"full"}
               border="4px solid"
               borderColor={"white"}
@@ -51,6 +51,8 @@ function Header({ communityData }: HeaderProps): ReactElement {
             padding={"5px 16px"}
             my={3}
             flexDirection={{ base: "column", md: "row" }}
+            justify={"space-between"}
+            w={"full"}
           >
             <Flex flexDirection={"column"} mr={"30px"}>
               <Text
@@ -78,24 +80,8 @@ function Header({ communityData }: HeaderProps): ReactElement {
                 onClick={() => onJoinOrLeaveCommunity(communityData, isJoined)}
                 isLoading={loading}
               >
-                {isJoined ? "Joined" : "Join Community"}
+                {isJoined ? "Joined" : "Join"}
               </Button>
-              {/* {isJoined ? (
-                <Icon
-                  as={BsBellFill}
-                  boxSize={10}
-                  color={"brand.200"}
-                  border={"2px solid"}
-                  borderRadius={"50%"}
-                  padding={1.5}
-                  _hover={{
-                    bg: "brand.100",
-                    color: "white",
-                  }}
-                />
-              ) : (
-                ""
-              )} */}
             </Flex>
           </Flex>
         </Flex>

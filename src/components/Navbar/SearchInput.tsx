@@ -14,7 +14,7 @@ export default function SearchInput({}: SearchInputProps) {
         </InputLeftElement>
         <Input
           type="text"
-          placeholder="Search ForumFlock"
+          placeholder="Find community to join"
           fontSize={"14pt"}
           _placeholder={{ color: "gray.500" }}
           _hover={{ bg: "white", border: "1px solid", borderColor: "blue.500" }}

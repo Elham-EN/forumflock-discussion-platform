@@ -1,6 +1,6 @@
 # 🌐 ForumFlock (Discussion Platform)
 
-In the heart of the remote learning era, university students needed a digital space to discuss academic topics, seek insights, and foster community spirit. That's where forumFlock came into the picture, an online discussion platform specifically curated for university students.
+ForumFlock is a web-based discussion platform built specifically for university students. It allows students to join communities that focus on specific courses or subjects. In these communities, students can post questions, topics, or information, and other members can discuss them by leaving comments. Posts can be upvoted or downvoted based on their usefulness. The creator of each community acts as a moderator and can remove comments that violate community guidelines.
 
 ## 🚀 Purpose and Goal:
 
