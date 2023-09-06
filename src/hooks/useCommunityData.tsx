@@ -151,6 +151,7 @@ export default function useCommunityData(): UseCommunityDataHook {
       setCommunityStateValue((prev) => ({
         ...prev,
         mySnippets: snippets as CommunitySnippet[],
+        snippetsFetched: true,
       }));
     } catch (error) {
       const errorMsg = error as FirestoreError;
@@ -166,6 +167,7 @@ export default function useCommunityData(): UseCommunityDataHook {
       setCommunityStateValue((prev) => ({
         ...prev,
         mySnippets: [],
+        snippetsFetched: false,
       }));
     }
     getMySnippets(); // call this when user is autheticated

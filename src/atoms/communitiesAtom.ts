@@ -21,10 +21,12 @@ export interface CommunityState {
   mySnippets: CommunitySnippet[];
   // Represent the current community we are in
   currentCommunity?: Community;
+  snippetsFetched: boolean;
 }
 
 const defaultCommunityState: CommunityState = {
   mySnippets: [],
+  snippetsFetched: false,
 };
 
 // An atom represents a piece of state. Atoms can be
