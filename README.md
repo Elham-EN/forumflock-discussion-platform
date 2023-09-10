@@ -2,6 +2,8 @@
 
 ForumFlock is a web-based discussion platform built specifically for university students. It allows students to join communities that focus on specific courses or subjects. In these communities, students can post questions, topics, or information, and other members can discuss them by leaving comments. Posts can be upvoted or downvoted based on their usefulness. The creator of each community acts as a moderator and can remove comments that violate community guidelines.
 
+![MainScreen!](public/images/main.png)
+
 ## 🚀 Purpose and Goal:
 
 ForumFlock is a platform I created to transform how students engage in academic discussions. Its goal is to break down barriers, foster community, and improve the overall learning experience.
