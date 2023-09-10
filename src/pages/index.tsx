@@ -22,6 +22,7 @@ import PostLoader from "@/components/Post/PostLoader";
 import PostItem from "@/components/Post/PostItem";
 import CreatePostLink from "@/components/Community/CreatePostLink";
 import useCommunityData from "@/hooks/useCommunityData";
+import Recommendation from "@/components/Community/Recommendation";
 
 // Root URL (Route or Homepage),
 const Home: NextPage = () => {
@@ -166,9 +167,7 @@ const Home: NextPage = () => {
         )}
       </>
       <>
-        <Stack>
-          <Text>About</Text>
-        </Stack>
+        <Recommendation />
       </>
     </PageContent>
   );
