@@ -1,6 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { firestore } from "@/firebase/clientApp";
-import { doc, getDoc } from "firebase/firestore";
+import {
+  collectionGroup,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import { GetServerSidePropsContext } from "next";
 import React, { ReactElement, useEffect } from "react";
 import { Community, communityState } from "@/atoms/communitiesAtom";
@@ -22,7 +29,17 @@ function CommunityPage({ communityData }: CommunityPageProps): ReactElement {
   const setCommunityStateValue = useSetRecoilState(communityState);
   const { communityStateValue } = useCommunityData();
 
+  // Get list of users
+  const getUsers = async () => {
+    const members = query(
+      collectionGroup(firestore, "communitySnippets"),
+      where("communityId", "==", communityData.id)
+    );
+    const querySnapshot = await getDocs(members);
+  };
+
   useEffect(() => {
+    getUsers();
     // Now the global state has access to current Community data
     setCommunityStateValue((prev) => ({
       ...prev,
@@ -67,7 +84,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       context.query.communityId as string
     );
     const communityDoc = await getDoc(communityDocRef);
-    console.log(communityDoc.data());
 
     return {
       props: {

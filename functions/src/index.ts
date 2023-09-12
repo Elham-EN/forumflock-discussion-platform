@@ -1,8 +1,15 @@
 import * as functions from "firebase-functions";
+
+// import {
+//   onDocumentCreated,
+//   Change,
+//   FirestoreEvent,
+// } from "firebase-functions/v2/firestore";
 // Firebase Admin SDK is a server-side library for Firebase that allows
 // you to interact with Firebase from privileged environments, such as
 // servers or cloud functions.
 import * as admin from "firebase-admin";
+import { Timestamp } from "firebase-admin/firestore";
 
 // Boot up our app on the server
 admin.initializeApp();
@@ -25,4 +32,65 @@ export const createUserDocument = functions.auth
       // create a new document with the user's uid
       .doc(user.uid)
       .set(newUser);
+  });
+
+export interface Post {
+  id?: string;
+  communityId: string;
+  creatorId: string;
+  creatorDisplayName: string;
+  title: string;
+  body: string;
+  numberOfComments: number;
+  voteStatus: number;
+  imageURL?: string;
+  communityImageURL?: string;
+  createdAt: Timestamp;
+}
+
+export const notifyOnPost = functions.firestore
+  .document("posts/{postId}")
+  .onCreate(async (snap, context) => {
+    try {
+      // Get the data of the newly created post
+      const newPostData = snap.data() as Post;
+      // Fetch the communityId from the new post's data
+      const communityId = newPostData.communityId;
+      // Fetch the creatorId from the new post's data
+      const creatorId = newPostData.creatorId;
+      // Query to fetch all users who have a communitySnippets
+      // document with the same communityId
+      const querySnapshot = await admin
+        .firestore()
+        .collectionGroup("communitySnippets")
+        .where("communityId", "==", communityId)
+        .get();
+      functions.logger.error("Users", querySnapshot.empty);
+
+      const communityMembers: any[] = [];
+      querySnapshot.forEach((doc) => {
+        const userId = doc.ref.parent.parent?.id;
+        if (userId) {
+          communityMembers.push(userId);
+        }
+      });
+      // Create a notification for each member, except
+      // for the one who created the post
+      const promises = communityMembers
+        .filter((memberId) => memberId !== creatorId)
+        .map((memberId) => {
+          return admin
+            .firestore()
+            .collection(`users/${memberId}/notifications`)
+            .add({
+              message: `A new post has been created in your community`,
+              read: false,
+              timestamp: admin.firestore.FieldValue.serverTimestamp(),
+            });
+        });
+      return Promise.all(promises);
+    } catch (error) {
+      functions.logger.error("An error occurred for notifyOnPost:", error);
+      return null;
+    }
   });
