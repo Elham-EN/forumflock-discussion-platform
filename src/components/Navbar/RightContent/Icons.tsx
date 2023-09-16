@@ -2,6 +2,7 @@ import React, { ReactElement } from "react";
 import { Flex, Icon, Tooltip } from "@chakra-ui/react";
 import { BsArrowUpRightCircle, BsBell, BsPlusLg } from "react-icons/bs";
 import { BiMessageRounded } from "react-icons/bi";
+import Notification from "./Notification";
 
 export default function Icons(): ReactElement {
   return (
@@ -48,7 +49,7 @@ export default function Icons(): ReactElement {
         >
           <Tooltip label="Notification" fontWeight={"bold"}>
             <span>
-              <Icon as={BsBell} boxSize={"7"} />
+              <Notification />
             </span>
           </Tooltip>
         </Flex>

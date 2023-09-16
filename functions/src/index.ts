@@ -1,10 +1,4 @@
 import * as functions from "firebase-functions";
-
-// import {
-//   onDocumentCreated,
-//   Change,
-//   FirestoreEvent,
-// } from "firebase-functions/v2/firestore";
 // Firebase Admin SDK is a server-side library for Firebase that allows
 // you to interact with Firebase from privileged environments, such as
 // servers or cloud functions.
@@ -76,6 +70,7 @@ export const notifyOnPost = functions.firestore
       });
       // Create a notification for each member, except
       // for the one who created the post
+      const username = newPostData.creatorDisplayName;
       const promises = communityMembers
         .filter((memberId) => memberId !== creatorId)
         .map((memberId) => {
@@ -83,7 +78,7 @@ export const notifyOnPost = functions.firestore
             .firestore()
             .collection(`users/${memberId}/notifications`)
             .add({
-              message: `A new post has been created in your community`,
+              message: `${username} created new post in ${communityId} community`,
               read: false,
               timestamp: admin.firestore.FieldValue.serverTimestamp(),
             });
@@ -94,3 +89,23 @@ export const notifyOnPost = functions.firestore
       return null;
     }
   });
+
+// interface Comment {
+//   id: string;
+//   postId: string;
+//   communityId: string;
+//   creatorDisplayText: string;
+//   creatorId: string;
+//   postTitle: string;
+//   text: string;
+// }
+
+// export const notifyOnComment = functions.firestore
+//   .document("comments/{commentId}")
+//   .onCreate(async (snap, context) => {
+//     const newCommentData = snap.data() as Comment;
+//     // Upload Objects from filesystem
+//     await admin.storage().bucket("").upload("");
+//     // Download the file
+//     await admin.storage().bucket("").file("").download();
+//   });
