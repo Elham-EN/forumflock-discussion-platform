@@ -71,6 +71,7 @@ export const notifyOnPost = functions.firestore
       // Create a notification for each member, except
       // for the one who created the post
       const username = newPostData.creatorDisplayName;
+      const postTitle = newPostData.title;
       const promises = communityMembers
         .filter((memberId) => memberId !== creatorId)
         .map((memberId) => {
@@ -79,6 +80,8 @@ export const notifyOnPost = functions.firestore
             .collection(`users/${memberId}/notifications`)
             .add({
               message: `${username} created new post in ${communityId} community`,
+              postTitle,
+              communityId,
               read: false,
               timestamp: admin.firestore.FieldValue.serverTimestamp(),
             });

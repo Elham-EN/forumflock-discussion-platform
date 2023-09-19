@@ -1,52 +1,92 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { auth, firestore } from "@/firebase/clientApp";
 import {
   Box,
   Button,
-  Divider,
   Flex,
   Icon,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
+  Spinner,
   Text,
 } from "@chakra-ui/react";
 import {
   FirestoreError,
   Timestamp,
   collection,
+  doc,
   getDocs,
+  orderBy,
   query,
+  updateDoc,
+  where,
 } from "firebase/firestore";
 import { ReactElement, useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import moment from "moment";
 import { BiFace } from "react-icons/bi";
 import { BsBell } from "react-icons/bs";
+import Link from "next/link";
 
 interface NotificationDetails {
   id: string;
   message: string;
   read: boolean;
   timestamp: Timestamp;
+  postTitle: string;
+  communityId: string;
 }
 
 export default function Notification(): ReactElement {
   const [notifications, setNotification] = useState<NotificationDetails[]>();
+  const [unreadCount, setUnreadCount] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [user] = useAuthState(auth);
 
-  const getNotification = async (): Promise<void> => {
+  const getNotifications = async (): Promise<void> => {
     setLoading(true);
     try {
-      const notificationDocs = await getDocs(
-        collection(firestore, `users/${user?.uid}/notifications`)
+      const q = query(
+        collection(firestore, `users/${user?.uid}/notifications`),
+        orderBy("timestamp", "desc")
       );
-      const notificationArr = notificationDocs.docs.map((item) => ({
-        id: item.id,
-        ...item.data(),
-      }));
+      const notificationDocs = await getDocs(q);
+      let unread = 0;
+      const notificationArr = notificationDocs.docs.map((item) => {
+        if (!item.data().read) {
+          unread++;
+        }
+        return {
+          id: item.id,
+          ...item.data(),
+        };
+      });
       setNotification(notificationArr as NotificationDetails[]);
+      setLoading(false);
+      setUnreadCount(unread);
+    } catch (error) {
+      const firestoreError = error as FirestoreError;
+      console.log(firestoreError.message);
+    }
+  };
+
+  const markNotificationAsRead = async () => {
+    try {
+      const q = query(
+        collection(firestore, `users/${user?.uid}/notifications`),
+        where("read", "==", false)
+      );
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((docSnapshot) => {
+        updateDoc(
+          doc(firestore, `users/${user?.uid}/notifications`, docSnapshot.id),
+          { read: true }
+        );
+      });
+      // Update client state
+      setUnreadCount(0);
     } catch (error) {
       const firestoreError = error as FirestoreError;
       console.log(firestoreError.message);
@@ -55,12 +95,12 @@ export default function Notification(): ReactElement {
 
   useEffect(() => {
     if (user) {
-      getNotification();
+      getNotifications();
     }
   }, [user]);
 
   return (
-    <Menu>
+    <Menu onOpen={markNotificationAsRead}>
       <MenuButton as={Button} variant={"unstyled"} position={"relative"}>
         <Icon as={BsBell} boxSize={"7"} />
         <Box
@@ -72,11 +112,11 @@ export default function Notification(): ReactElement {
           borderRadius={"full"}
         >
           <Text fontSize={"12pt"} color={"white"}>
-            {notifications?.length}
+            {unreadCount > 0 && unreadCount}
           </Text>
         </Box>
       </MenuButton>
-      <MenuList maxW={"95%"} shadow={"2xl"}>
+      <MenuList shadow={"2xl"} maxHeight="400px" overflowY="auto">
         {notifications?.map((item) => (
           <NotificationDetails
             key={item.id}
@@ -84,6 +124,8 @@ export default function Notification(): ReactElement {
             read={item.read}
             timestamp={item.timestamp}
             id={item.id}
+            postTitle={item.postTitle}
+            communityId={item.communityId}
           />
         ))}
       </MenuList>
@@ -97,18 +139,26 @@ function NotificationDetails(props: NotificationDetails): ReactElement {
       _hover={{ backgroundColor: "gray.100", shadow: "dark-lg" }}
       borderBottom={"1px solid"}
       borderColor={"gray.300"}
+      style={{ whiteSpace: "normal", maxWidth: "450px" }}
     >
-      <Flex px={2} py={3} gap={3} align={"center"}>
-        <Flex>
-          <Icon as={BiFace} boxSize={"7"} />
+      <Link href={`/f/${props.communityId}`}>
+        <Flex px={2} py={3} gap={10} align={"center"} justify={"center"}>
+          <Flex>
+            <Icon as={BiFace} boxSize={"10"} />
+          </Flex>
+          <Flex direction={"column"}>
+            <Text display={"block"} fontSize={"14pt"}>
+              {props.message}{" "}
+            </Text>
+            <Text fontSize={"14pt"} fontWeight={"bold"} color={"gray.400"}>
+              {moment(props.timestamp.toDate()).fromNow()}
+            </Text>
+            <Text fontSize={"14pt"} fontWeight={"semibold"}>
+              {props.postTitle}
+            </Text>
+          </Flex>
         </Flex>
-        <Flex direction={"column"}>
-          <Text fontSize={"14pt"}>{props.message}</Text>
-          <Text fontSize={"14pt"} fontWeight={"bold"} color={"gray.400"}>
-            {moment(props.timestamp.toDate()).fromNow()}
-          </Text>
-        </Flex>
-      </Flex>
+      </Link>
     </MenuItem>
   );
 }

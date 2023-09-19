@@ -29,17 +29,17 @@ function CommunityPage({ communityData }: CommunityPageProps): ReactElement {
   const setCommunityStateValue = useSetRecoilState(communityState);
   const { communityStateValue } = useCommunityData();
 
-  // Get list of users
-  const getUsers = async () => {
-    const members = query(
-      collectionGroup(firestore, "communitySnippets"),
-      where("communityId", "==", communityData.id)
-    );
-    const querySnapshot = await getDocs(members);
-  };
+  // // Get list of users
+  // const getUsers = async () => {
+  //   const members = query(
+  //     collectionGroup(firestore, "communitySnippets"),
+  //     where("communityId", "==", communityData.id)
+  //   );
+  //   const querySnapshot = await getDocs(members);
+  // };
 
   useEffect(() => {
-    getUsers();
+    // getUsers();
     // Now the global state has access to current Community data
     setCommunityStateValue((prev) => ({
       ...prev,
