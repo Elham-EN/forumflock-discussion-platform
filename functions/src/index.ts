@@ -84,6 +84,7 @@ export const notifyOnPost = functions.firestore
               communityId,
               read: false,
               timestamp: admin.firestore.FieldValue.serverTimestamp(),
+              type: "PostNotification",
             });
         });
       return Promise.all(promises);
@@ -113,22 +114,64 @@ export const deleteOldNotifications = functions.pubsub
     await batch.commit();
   });
 
-// interface Comment {
-//   id: string;
-//   postId: string;
-//   communityId: string;
-//   creatorDisplayText: string;
-//   creatorId: string;
-//   postTitle: string;
-//   text: string;
-// }
+interface Comment {
+  id: string;
+  postId: string;
+  communityId: string;
+  creatorDisplayText: string;
+  creatorId: string;
+  postTitle: string;
+  text: string;
+}
 
-// export const notifyOnComment = functions.firestore
-//   .document("comments/{commentId}")
-//   .onCreate(async (snap, context) => {
-//     const newCommentData = snap.data() as Comment;
-//     // Upload Objects from filesystem
-//     await admin.storage().bucket("").upload("");
-//     // Download the file
-//     await admin.storage().bucket("").file("").download();
-//   });
+// Notify user that somebody commented on their post
+export const notifyOnComment = functions.firestore
+  .document("comments/{commentId}")
+  .onCreate(async (snap, context) => {
+    try {
+      const newCommentData = snap.data() as Comment;
+      // The community name where this post reside
+      const communityId = newCommentData.communityId;
+      // User who commennt on the post
+      const creatorId = newCommentData.creatorId;
+      const commentId = newCommentData.id;
+      // Fetch users who are in the same community
+      const querySnapshot = await admin
+        .firestore()
+        .collectionGroup("communitySnippets")
+        .where("communityId", "==", communityId)
+        .get();
+      const communityMembers: any[] = [];
+      querySnapshot.forEach((doc) => {
+        const userId = doc.ref.parent.parent?.id;
+        if (userId) {
+          communityMembers.push(userId);
+        }
+      });
+      // show error log if there is error
+      functions.logger.error("No collection of users");
+      //create a notification for each member
+      const username = newCommentData.creatorDisplayText; // user who commented
+      const postTitle = newCommentData.postTitle;
+      const promises = communityMembers
+        .filter((memberId) => memberId !== creatorId)
+        .map((memberId) => {
+          return admin
+            .firestore()
+            .collection(`users/${memberId}/notifications`)
+            .add({
+              message: `${username} commented on the post in ${communityId} community`,
+              postTitle,
+              communityId,
+              commentId,
+              read: false,
+              timestamp: admin.firestore.FieldValue.serverTimestamp(),
+              type: "CommentNotification",
+            });
+        });
+      return Promise.all(promises);
+    } catch (error) {
+      functions.logger.error("An error occurred for notifyOnComment:", error);
+      return null;
+    }
+  });
