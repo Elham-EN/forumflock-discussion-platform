@@ -45,7 +45,6 @@ const Home: NextPage = () => {
   // For Pagination
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [lastVisible, setLastVisible] = useState<null | DocumentData>(null);
-  const [posts, setPosts] = useState<Post[]>([]);
 
   // Build feed for authenticated users
   const buildUserHomeFeed = async () => {
@@ -75,38 +74,20 @@ const Home: NextPage = () => {
         setLoading(false);
       } else {
         // if not, show them generic feeds
-        buildNoUserHomeFeed();
+        fetchPostsForNonAuthUsers();
       }
     } catch (error) {
       console.log("buildUserHomeFeed error", error);
     }
   };
 
-  // Build feed for non-authenticated users
-  const buildNoUserHomeFeed = async () => {
-    setLoading(true);
-    try {
-      const postQuery = query(
-        collection(firestore, "posts"),
-        orderBy("voteStatus", "desc"),
-        limit(10)
-      );
-      const postDocs = await getDocs(postQuery);
-      const posts = postDocs.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      setPostStateValue((prev) => ({
-        ...prev,
-        posts: posts as Post[],
-      }));
-    } catch (error) {
-      console.log("buildNoUserHomeFeed error", error);
-    }
-    setLoading(false);
-  };
-
   const fetchPostsForNonAuthUsers = async (last?: DocumentData | null) => {
     setLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    // wait for 1 second
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     let postQuery: Query<DocumentData>;
+
     if (last) {
       postQuery = query(
         collection(firestore, "posts"),
@@ -121,6 +102,7 @@ const Home: NextPage = () => {
         limit(5)
       );
     }
+
     try {
       const postDocs = await getDocs(postQuery);
       const newPosts = postDocs.docs.map(
@@ -132,12 +114,12 @@ const Home: NextPage = () => {
       );
 
       if (newPosts.length > 0) {
+        // Set the last visible post that was rendered
         setLastVisible(postDocs.docs[postDocs.docs.length - 1]);
         setPostStateValue((prev) => ({
           ...prev,
           posts: [...prev.posts, ...newPosts],
         }));
-        setPosts((prevPosts) => [...prevPosts, ...newPosts]);
       } else {
         setHasMore(false);
       }
@@ -185,6 +167,7 @@ const Home: NextPage = () => {
     // if there is no user and not longer attempting to
     // fetch the user, then buildNoUserHomeFeed
     if (!user && !loadingUser && postStateValue.posts.length === 0)
+      // fetch the initial posts
       fetchPostsForNonAuthUsers();
   }, [user, loadingUser]);
 
@@ -197,29 +180,6 @@ const Home: NextPage = () => {
   return (
     <PageContent>
       <>
-        {/* <CreatePostLink />
-        {loading ? (
-          <PostLoader />
-        ) : (
-          <Stack spacing={3}>
-            {postStateValue.posts.map((post) => (
-              <PostItem
-                key={post.id}
-                post={post}
-                onDeletePost={onDeletePost}
-                onSelectPost={onSelectPost}
-                onVote={onVote}
-                userVoteValue={
-                  postStateValue.postVotes.find(
-                    (item) => item.postId === post.id
-                  )?.voteValue
-                }
-                userIsCreator={user?.uid === post.creatorId}
-                homePage={true}
-              />
-            ))}
-          </Stack>
-        )} */}
         <CreatePostLink />
         <InfiniteScroll
           dataLength={postStateValue.posts.length}

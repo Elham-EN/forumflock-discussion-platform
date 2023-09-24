@@ -93,6 +93,26 @@ export const notifyOnPost = functions.firestore
     }
   });
 
+// automatically delete old notifications from Firebase Firestore
+export const deleteOldNotifications = functions.pubsub
+  .schedule("every 24 hours")
+  .onRun(async (context) => {
+    // 30 days ago
+    const threshold = Timestamp.fromMillis(
+      Date.now() - 30 * 24 * 60 * 60 + 1000
+    );
+
+    const deleteOldNotificationsSnapshot = await admin
+      .firestore()
+      .collectionGroup("notifications")
+      .where("timestamp", "<", threshold)
+      .get();
+
+    const batch = admin.firestore().batch();
+    deleteOldNotificationsSnapshot.docs.forEach((doc) => batch.delete(doc.ref));
+    await batch.commit();
+  });
+
 // interface Comment {
 //   id: string;
 //   postId: string;
