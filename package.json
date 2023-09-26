@@ -31,6 +31,7 @@
     "filepond": "^4.30.4",
     "filepond-plugin-image-preview": "^4.6.11",
     "firebase": "^9.22.2",
+    "firebase-functions": "^4.4.1",
     "framer-motion": "^10.12.16",
     "moment": "^2.29.4",
     "next": "13.4.4",
