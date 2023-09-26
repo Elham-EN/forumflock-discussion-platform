@@ -25,12 +25,13 @@ export default function SearchInput() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchResults, setSearchResults] = useState<SearchResults[]>();
 
+  // Listening to changes in `searchTerm` and fetching communities that
+  // match the term and then rendering them in the dropdown
   useEffect(() => {
     if (searchTerm === "") {
       setSearchResults([]);
       return;
     }
-
     const fetchCommunities = async () => {
       const communityCollection = collection(firestore, "communities");
       const communityQuery = query(
@@ -53,6 +54,7 @@ export default function SearchInput() {
 
     fetchCommunities();
   }, [searchTerm]);
+
   return (
     <Flex flexGrow={1} mr={2} ml={2} align={"center"} position="relative">
       <InputGroup>
